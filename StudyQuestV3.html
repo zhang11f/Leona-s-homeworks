@@ -1,0 +1,1730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Study Quest">
+<title>⚔️ Study Quest</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:   #F5A623;
+  --pink:   #FF4F9A;
+  --teal:   #0ABFBC;
+  --lav:    #9B59E8;
+  --mint:   #27AE60;
+  --sky:    #2980B9;
+  --orange: #E67E22;
+  --ink:    #1a1040;
+  --bg:     #F8F6FF;
+  --card:   #FFFFFF;
+  --border: #E8E0F5;
+  --ok:     #27AE60;
+  --err:    #E74C3C;
+  --warn:   #F39C12;
+  --muted:  #888;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow-x:hidden;}
+body{
+  font-family:'Nunito',sans-serif;
+  background:var(--bg);
+  background-image:
+    radial-gradient(ellipse 70% 50% at 10% 0%,  rgba(155,89,232,.07) 0%,transparent 55%),
+    radial-gradient(ellipse 50% 40% at 90% 100%, rgba(10,191,188,.06) 0%,transparent 55%);
+  min-height:100vh;color:var(--ink);
+}
+
+/* ── SCREENS ── */
+.screen{display:none;min-height:100vh;position:relative;z-index:1;}
+.screen.active{display:flex;flex-direction:column;}
+
+/* ══════════════════════════════
+   SCREEN 1 — API KEY
+══════════════════════════════ */
+#scKey{align-items:center;justify-content:center;padding:30px 20px;}
+.key-card{
+  background:#fff;border-radius:28px;padding:36px 28px;
+  max-width:400px;width:100%;
+  box-shadow:0 8px 40px rgba(155,89,232,.12);
+  border:2px solid var(--border);text-align:center;
+}
+.key-logo{font-size:3.5rem;display:block;margin-bottom:10px;}
+.key-card h2{font-family:'Fredoka One',cursive;font-size:2.2rem;color:var(--lav);margin-bottom:6px;}
+.key-card p{font-size:.86rem;color:var(--muted);line-height:1.65;margin-bottom:20px;}
+.key-inp{
+  width:100%;background:#F8F6FF;border:2px solid var(--border);
+  border-radius:14px;padding:12px 16px;font-family:'Nunito',sans-serif;
+  font-size:.88rem;color:var(--ink);outline:none;transition:border-color .2s;margin-bottom:8px;
+}
+.key-inp:focus{border-color:var(--lav);}
+.key-inp::placeholder{color:#bbb;}
+.key-note{font-size:.72rem;color:#aaa;margin-bottom:18px;line-height:1.5;text-align:left;}
+.key-note a{color:var(--teal);text-decoration:none;}
+.err-msg{background:#fff0f0;border:1.5px solid #fcc;border-radius:10px;
+  padding:9px 13px;font-size:.82rem;font-weight:700;color:var(--err);
+  line-height:1.5;margin-bottom:12px;display:none;}
+.err-msg.show{display:block;}
+
+/* ══════════════════════════════
+   SCREEN 2 — SELECTOR
+══════════════════════════════ */
+#scSelect{padding:0 0 60px;}
+
+.sel-header{
+  background:linear-gradient(135deg,#6C3DE8,#9B59E8,#C77DFF);
+  padding:22px 20px 20px;text-align:center;position:relative;overflow:hidden;
+}
+.sel-header::before{content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(-45deg,rgba(255,255,255,.03) 0,rgba(255,255,255,.03) 1px,transparent 1px,transparent 12px);}
+.sel-header-inner{position:relative;z-index:1;}
+.sq-logo{font-family:'Fredoka One',cursive;font-size:2.4rem;color:#fff;
+  text-shadow:0 2px 12px rgba(0,0,0,.2);margin-bottom:2px;}
+.sq-tagline{font-size:.72rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;
+  color:rgba(255,255,255,.65);}
+
+/* hero banner */
+.hero-banner{
+  background:linear-gradient(135deg,#fff9ff,#f0ebff);
+  border-bottom:2px solid var(--border);
+  padding:16px 20px;
+  display:flex;align-items:center;justify-content:center;gap:20px;
+  min-height:110px;
+}
+.hero-girl-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;opacity:.35;
+  transition:opacity .3s;cursor:pointer;}
+.hero-girl-wrap.sel{opacity:1;}
+.hero-girl-name{font-family:'Fredoka One',cursive;font-size:.88rem;color:var(--lav);}
+
+/* speech bubble for hero girls */
+.hg-bub{
+  background:#fff;border:2px solid var(--lav);border-radius:14px 14px 14px 4px;
+  padding:5px 10px;font-family:'Fredoka One',cursive;font-size:.68rem;
+  color:var(--lav);max-width:130px;text-align:center;line-height:1.4;
+  box-shadow:2px 2px 0 rgba(155,89,232,.15);
+  min-height:28px;display:flex;align-items:center;justify-content:center;
+}
+
+.sel-body{padding:16px 16px 0;}
+.sel-section{margin-bottom:20px;}
+.sel-label{font-family:'Fredoka One',cursive;font-size:.72rem;color:#aaa;
+  letter-spacing:2px;text-transform:uppercase;margin-bottom:9px;display:block;}
+
+/* grade buttons */
+.grade-btns{display:flex;gap:8px;flex-wrap:wrap;}
+.grade-btn{
+  padding:9px 16px;border-radius:50px;border:2px solid var(--border);
+  background:#fff;cursor:pointer;font-family:'Fredoka One',cursive;
+  font-size:.92rem;color:#aaa;transition:all .2s;
+}
+.grade-btn.sel{border-color:var(--gold);background:rgba(245,166,35,.1);color:var(--gold);}
+
+/* world grid */
+.world-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.world-btn{
+  padding:13px 10px;border-radius:14px;border:2px solid var(--border);
+  background:#fff;cursor:pointer;text-align:center;transition:all .18s;
+  font-family:'Fredoka One',cursive;color:#bbb;
+  box-shadow:0 2px 8px rgba(0,0,0,.04);
+}
+.world-btn .wico{font-size:1.9rem;display:block;margin-bottom:4px;}
+.world-btn .wname{font-size:.82rem;display:block;line-height:1.3;}
+.world-btn .wsub{font-size:.6rem;color:#ccc;display:block;margin-top:2px;}
+.world-btn.sel{border-color:var(--teal);background:rgba(10,191,188,.06);color:var(--teal);
+  box-shadow:0 4px 14px rgba(10,191,188,.15);}
+.world-btn.sel .wsub{color:rgba(10,191,188,.6);}
+
+/* category + topic */
+.cat-btns{display:flex;flex-direction:column;gap:7px;}
+.cat-btn{
+  padding:10px 14px;border-radius:12px;border:2px solid var(--border);
+  background:#fff;cursor:pointer;display:flex;align-items:center;gap:10px;
+  font-family:'Fredoka One',cursive;color:#bbb;transition:all .18s;
+  box-shadow:0 2px 6px rgba(0,0,0,.04);
+}
+.cat-btn .cico{font-size:1.3rem;}
+.cat-btn .cname{font-size:.9rem;}
+.cat-btn.sel{border-color:var(--orange);background:rgba(230,126,34,.06);color:var(--orange);}
+
+.topic-btns{display:flex;flex-direction:column;gap:7px;margin-top:2px;}
+.topic-btn{
+  padding:10px 14px;border-radius:12px;border:2px solid var(--border);
+  background:#fff;cursor:pointer;font-family:'Fredoka One',cursive;
+  font-size:.88rem;color:#bbb;transition:all .18s;text-align:left;
+  box-shadow:0 2px 6px rgba(0,0,0,.04);
+}
+.topic-btn.sel{border-color:var(--pink);background:rgba(255,79,154,.06);color:var(--pink);}
+
+/* difficulty */
+.diff-btns{display:flex;flex-direction:column;gap:7px;}
+.diff-btn{
+  padding:11px 14px;border-radius:12px;border:2px solid var(--border);
+  background:#fff;cursor:pointer;display:flex;align-items:center;gap:11px;
+  font-family:'Fredoka One',cursive;color:#bbb;transition:all .18s;
+  box-shadow:0 2px 6px rgba(0,0,0,.04);
+}
+.diff-btn .dico{font-size:1.4rem;width:28px;text-align:center;}
+.diff-btn .dname{font-size:.95rem;display:block;}
+.diff-btn .ddesc{font-size:.62rem;color:#ccc;display:block;margin-top:1px;}
+.diff-btn.sel{border-color:var(--lav);background:rgba(155,89,232,.07);color:var(--lav);}
+.diff-btn.sel .ddesc{color:rgba(155,89,232,.55);}
+
+/* begin btn */
+.begin-btn{
+  width:100%;padding:16px;border-radius:50px;border:none;
+  font-family:'Fredoka One',cursive;font-size:1.2rem;
+  background:linear-gradient(135deg,var(--gold),var(--orange));
+  color:#fff;cursor:pointer;letter-spacing:.4px;margin-top:4px;
+  box-shadow:0 6px 20px rgba(245,166,35,.35);
+  transition:transform .15s,box-shadow .15s;
+}
+.begin-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(245,166,35,.45);}
+.begin-btn:active{transform:translateY(2px);}
+.begin-btn:disabled{background:#e0e0e0;color:#bbb;box-shadow:none;cursor:not-allowed;transform:none;}
+.changekey-lnk{background:none;border:none;color:#ccc;font-family:'Nunito',sans-serif;
+  font-size:.74rem;cursor:pointer;text-decoration:underline;text-align:center;
+  display:block;margin:12px auto 0;}
+
+/* ══════════════════════════════
+   SCREEN 3 — LOADING
+══════════════════════════════ */
+#scLoad{align-items:center;justify-content:center;text-align:center;gap:20px;padding:30px 20px;
+  background:linear-gradient(160deg,#faf8ff,#f0ebff,#ffeef8);}
+.load-heroes{display:flex;align-items:flex-end;justify-content:center;gap:24px;margin-bottom:8px;}
+.load-hero-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.load-spell-title{font-family:'Fredoka One',cursive;font-size:1.7rem;color:var(--lav);}
+.load-spell-sub{font-size:.86rem;color:#888;max-width:280px;line-height:1.6;}
+.load-dots{display:flex;gap:9px;justify-content:center;}
+.load-dot{width:11px;height:11px;border-radius:50%;animation:ldot 1.4s ease-in-out infinite;}
+.load-dot:nth-child(1){background:var(--gold);}
+.load-dot:nth-child(2){background:var(--pink);animation-delay:.22s;}
+.load-dot:nth-child(3){background:var(--lav);animation-delay:.44s;}
+@keyframes ldot{0%,80%,100%{transform:scale(.3);opacity:.3;}40%{transform:scale(1);opacity:1;}}
+
+/* ══════════════════════════════
+   SCREEN 4 — QUEST
+══════════════════════════════ */
+#scQuest{padding:0;}
+.qhdr{
+  background:linear-gradient(135deg,#6C3DE8,#9B59E8,#C77DFF);
+  padding:18px 18px 16px;position:relative;overflow:hidden;
+}
+.qhdr::before{content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(-45deg,rgba(255,255,255,.03) 0,rgba(255,255,255,.03) 1px,transparent 1px,transparent 12px);}
+.qhdr-inner{position:relative;z-index:1;}
+.qtitle{font-family:'Fredoka One',cursive;font-size:1.3rem;color:#fff;margin-bottom:7px;line-height:1.2;}
+.qtitle em{color:#FFD93D;font-style:normal;}
+.qpills{display:flex;gap:6px;flex-wrap:wrap;}
+.qpill{background:rgba(255,255,255,.18);border-radius:50px;padding:3px 11px;
+  font-family:'Fredoka One',cursive;font-size:.66rem;color:rgba(255,255,255,.9);}
+
+/* badge */
+.badge-slot{position:absolute;top:12px;right:14px;width:64px;height:64px;pointer-events:none;z-index:2;}
+.badge{display:none;width:64px;height:64px;border-radius:50%;
+  font-family:'Fredoka One',cursive;font-size:.5rem;color:#fff;
+  text-align:center;flex-direction:column;align-items:center;justify-content:center;
+  border:3px solid rgba(255,255,255,.5);
+  transform:scale(0) rotate(-15deg);
+  transition:transform .55s cubic-bezier(.175,.885,.32,1.275);line-height:1.3;}
+.badge.show{display:flex;transform:scale(1) rotate(-8deg);}
+.badge i{font-size:1.2rem;font-style:normal;display:block;}
+.b-plat{background:linear-gradient(135deg,#e8e8e8,#a8a8a8);animation:bpS 2s ease-in-out infinite;}
+.b-gold{background:linear-gradient(135deg,#FFD93D,#e6a817);animation:bgG 2s ease-in-out infinite;}
+.b-silv{background:linear-gradient(135deg,#c0c0c0,#888);}
+.b-brnz{background:linear-gradient(135deg,#cd7f32,#a0522d);}
+@keyframes bpS{0%,100%{box-shadow:0 0 14px rgba(255,255,255,.8);}50%{box-shadow:0 0 26px #fff;}}
+@keyframes bgG{0%,100%{box-shadow:0 0 10px rgba(255,217,61,.6);}50%{box-shadow:0 0 22px #FFD93D;}}
+
+/* question cards */
+.qbody{padding:14px 14px 30px;}
+.qcard{
+  background:#fff;border:1.5px solid var(--border);
+  border-left:4px solid var(--teal);border-radius:16px;padding:16px;
+  margin-bottom:12px;box-shadow:0 3px 14px rgba(0,0,0,.05);
+  animation:qcIn .4s ease both;
+}
+.qcard:nth-child(2){animation-delay:.08s;}
+.qcard:nth-child(3){animation-delay:.16s;}
+.qcard:nth-child(4){animation-delay:.24s;}
+.qcard:nth-child(5){animation-delay:.32s;}
+@keyframes qcIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+
+.qcard-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;}
+.qnum{width:28px;height:28px;border-radius:50%;flex-shrink:0;background:var(--teal);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Fredoka One',cursive;font-size:.85rem;color:#fff;margin-top:2px;}
+.qtext{font-family:'Fredoka One',cursive;font-size:.95rem;color:var(--ink);line-height:1.5;flex:1;}
+
+/* MC */
+.mc-opts{display:flex;flex-direction:column;gap:7px;margin-top:4px;}
+.mc-opt{
+  padding:9px 13px;border-radius:10px;border:1.5px solid var(--border);
+  background:#fafafa;cursor:pointer;transition:all .18s;
+  font-family:'Fredoka One',cursive;font-size:.88rem;color:#888;
+  display:flex;align-items:center;gap:9px;
+}
+.mc-opt:hover{border-color:var(--teal);background:rgba(10,191,188,.04);}
+.mc-opt.selected{border-color:var(--teal);background:rgba(10,191,188,.07);color:var(--teal);}
+.mc-opt.ok{border-color:var(--ok);background:rgba(39,174,96,.07);color:var(--ok);}
+.mc-opt.no{border-color:var(--err);background:rgba(231,76,60,.05);color:var(--err);}
+.mc-ltr{width:22px;height:22px;border-radius:50%;flex-shrink:0;background:rgba(0,0,0,.06);
+  display:flex;align-items:center;justify-content:center;font-size:.7rem;}
+
+/* fill-in */
+.ans-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:10px;}
+.ans-lbl{font-family:'Fredoka One',cursive;font-size:.83rem;color:#aaa;}
+.ans-inp{
+  background:#f8f8ff;border:2px solid var(--border);border-radius:10px;
+  padding:8px 12px;min-width:110px;font-family:'Fredoka One',cursive;
+  font-size:.95rem;color:var(--ink);text-align:center;outline:none;
+  transition:border-color .2s,background .2s;
+}
+.ans-inp:focus{border-color:var(--teal);background:rgba(10,191,188,.04);}
+.ans-inp.ok{border-color:var(--ok);background:rgba(39,174,96,.06);color:var(--ok);}
+.ans-inp.no{border-color:var(--err);background:rgba(231,76,60,.04);color:var(--err);}
+.ans-inp:disabled{color:#bbb;border-color:#e0e0e0;cursor:not-allowed;background:#f5f5f5;}
+
+/* btn row */
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px;}
+.chk-btn{padding:7px 18px;border-radius:50px;border:none;
+  font-family:'Fredoka One',cursive;font-size:.85rem;
+  background:var(--teal);color:#fff;cursor:pointer;
+  box-shadow:0 3px 0 rgba(0,0,0,.12);transition:transform .1s;}
+.chk-btn:active{transform:translateY(2px);}
+.chk-btn:disabled{background:#ddd;color:#bbb;box-shadow:none;cursor:not-allowed;}
+.hint-btn{padding:6px 13px;border-radius:50px;
+  border:1.5px solid rgba(245,166,35,.4);background:rgba(245,166,35,.07);
+  font-family:'Fredoka One',cursive;font-size:.78rem;
+  color:var(--gold);cursor:pointer;transition:all .18s;
+  display:inline-flex;align-items:center;gap:4px;}
+.hint-btn:hover{background:rgba(245,166,35,.14);}
+.hint-btn.used{opacity:.3;pointer-events:none;}
+.hint-bub{display:none;margin-top:7px;padding:8px 12px;
+  background:#fffbeb;border:1.5px solid rgba(245,166,35,.3);
+  border-radius:10px;font-size:.8rem;font-weight:700;
+  color:#92400e;line-height:1.5;}
+.hint-bub.show{display:block;}
+.hint-tag{display:inline-flex;align-items:center;background:rgba(245,166,35,.15);
+  border-radius:6px;padding:1px 6px;font-size:.65rem;font-weight:800;
+  color:var(--gold);margin-left:5px;}
+.qfb{font-size:.82rem;font-weight:800;margin-top:7px;min-height:16px;line-height:1.4;}
+.qfb.ok{color:var(--ok);}
+.qfb.warn{color:var(--warn);}
+.qfb.lock{color:#aaa;}
+
+/* submit */
+.submit-area{padding:8px 14px 40px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.submit-btn{width:100%;max-width:400px;padding:15px;border-radius:50px;border:none;
+  font-family:'Fredoka One',cursive;font-size:1.1rem;
+  background:linear-gradient(135deg,var(--gold),var(--orange));
+  color:#fff;cursor:pointer;box-shadow:0 5px 18px rgba(245,166,35,.3);
+  transition:transform .1s;}
+.submit-btn:active{transform:translateY(2px);}
+.newquest-btn{background:none;border:1.5px solid var(--border);border-radius:50px;
+  padding:8px 24px;font-family:'Fredoka One',cursive;font-size:.85rem;
+  color:#aaa;cursor:pointer;transition:all .18s;}
+.newquest-btn:hover{border-color:var(--lav);color:var(--lav);}
+
+/* ══ FLOATING AVATAR ══ */
+.av-wrap{position:fixed;bottom:16px;right:12px;z-index:300;
+  filter:drop-shadow(2px 6px 10px rgba(0,0,0,.14));user-select:none;}
+.av-svg{animation:avIdle 3s ease-in-out infinite;transform-origin:bottom center;}
+@keyframes avIdle{0%,100%{transform:translateY(0) rotate(-1deg);}50%{transform:translateY(-8px) rotate(1.5deg);}}
+.av-svg.rc1{animation:rc1 .45s ease 4 forwards;}
+.av-svg.rc2{animation:rc2 .55s ease 3 forwards;}
+.av-svg.rc3{animation:rc3 .3s ease 6 forwards;}
+.av-svg.rw1{animation:rw1 .28s ease 6 forwards;}
+.av-svg.rw2{animation:rw2 .4s ease 5 forwards;}
+.av-svg.rw3{animation:rw3 .45s ease 3 forwards;}
+.av-svg.rlk{animation:rlk .38s ease 3 forwards;}
+@keyframes rc1{0%,100%{transform:translateY(0);}50%{transform:translateY(-24px) scale(1.12) rotate(5deg);}}
+@keyframes rc2{0%{transform:rotate(0);}50%{transform:rotate(180deg) scale(1.1);}100%{transform:rotate(360deg);}}
+@keyframes rc3{0%,100%{transform:translateX(0);}25%{transform:translateX(-14px) rotate(-8deg);}75%{transform:translateX(14px) rotate(8deg);}}
+@keyframes rw1{0%,100%{transform:translateX(0);}25%{transform:translateX(-10px);}75%{transform:translateX(10px);}}
+@keyframes rw2{0%,100%{transform:rotate(0);}25%{transform:rotate(-12deg);}75%{transform:rotate(12deg);}}
+@keyframes rw3{0%,100%{transform:scale(1);}50%{transform:scale(.75) translateY(12px);}}
+@keyframes rlk{0%,100%{transform:translateY(0);}30%{transform:translateY(-7px) rotate(-3deg);}60%{transform:translateY(3px);}}
+
+.av-bub{position:absolute;bottom:195px;right:6px;
+  background:#fff;border:2px solid var(--lav);
+  border-radius:14px 14px 4px 14px;
+  padding:6px 11px;font-family:'Fredoka One',cursive;font-size:.72rem;
+  color:var(--ink);max-width:180px;line-height:1.4;text-align:center;
+  box-shadow:2px 2px 0 rgba(155,89,232,.2);transition:opacity .25s;}
+
+/* ══ FINALE ══ */
+.fin-ov{display:none;position:fixed;inset:0;z-index:1000;
+  background:rgba(248,246,255,.96);backdrop-filter:blur(10px);
+  flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;padding:24px;text-align:center;}
+.fin-ov.show{display:flex;}
+.cfp{position:absolute;top:-20px;border-radius:2px;animation:cfall linear infinite;}
+@keyframes cfall{0%{transform:translateY(0) rotate(0);opacity:1;}100%{transform:translateY(110vh) rotate(720deg);opacity:0;}}
+.fin-suc,.fin-cmb{display:none;flex-direction:column;align-items:center;gap:12px;}
+.fin-suc.show,.fin-cmb.show{display:flex;}
+.ydi{font-family:'Fredoka One',cursive;font-size:2.8rem;
+  background:linear-gradient(135deg,var(--gold),var(--pink),var(--lav));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:ydip .6s cubic-bezier(.175,.885,.32,1.275) both;line-height:1.1;}
+@keyframes ydip{from{transform:scale(0) rotate(-5deg);opacity:0;}to{transform:scale(1);opacity:1;}}
+.fin-emoji{font-size:4.5rem;animation:eBounce .8s cubic-bezier(.175,.885,.32,1.275) .3s both;}
+@keyframes eBounce{from{transform:scale(0) translateY(40px);opacity:0;}to{transform:scale(1) translateY(0);opacity:1;}}
+.fin-score{font-family:'Fredoka One',cursive;font-size:1.1rem;color:var(--ink);opacity:0;animation:fdin .5s ease 1s forwards;}
+.fin-time{font-family:'Fredoka One',cursive;font-size:.85rem;color:var(--muted);opacity:0;animation:fdin .5s ease 1.3s forwards;}
+@keyframes fdin{to{opacity:1;}}
+.cmb-ttl{font-family:'Fredoka One',cursive;font-size:1.8rem;color:var(--lav);}
+.cmb-msg{font-family:'Fredoka One',cursive;font-size:.9rem;color:#666;max-width:300px;line-height:1.5;}
+.cmb-time{font-family:'Fredoka One',cursive;font-size:.82rem;color:var(--muted);}
+.fin-btn{padding:12px 34px;border-radius:50px;border:none;
+  font-family:'Fredoka One',cursive;font-size:1rem;cursor:pointer;
+  box-shadow:0 5px 0 rgba(0,0,0,.1);animation:rp 2s ease-in-out infinite;}
+.fin-btn.retry{background:linear-gradient(135deg,var(--gold),var(--orange));color:#fff;}
+.fin-btn.newq{background:linear-gradient(135deg,var(--teal),var(--lav));color:#fff;}
+@keyframes rp{0%,100%{transform:scale(1);}50%{transform:scale(1.04);}}
+
+/* universal primary btn */
+.btn-primary{width:100%;padding:14px;border-radius:50px;border:none;
+  font-family:'Fredoka One',cursive;font-size:1.1rem;
+  background:linear-gradient(135deg,var(--lav),#6C3DE8);
+  color:#fff;cursor:pointer;box-shadow:0 5px 18px rgba(155,89,232,.3);
+  transition:transform .15s;}
+.btn-primary:hover{transform:translateY(-2px);}
+.btn-primary:active{transform:translateY(2px);}
+.btn-primary:disabled{background:#ddd;color:#bbb;box-shadow:none;transform:none;cursor:not-allowed;}
+
+/* divider */
+.sel-divider{height:1px;background:var(--border);margin:4px 0 16px;}
+
+/* quest intensity */
+.intensity-btns{display:flex;flex-direction:column;gap:7px;}
+.intensity-btn{
+  padding:12px 14px;border-radius:14px;border:2px solid var(--border);
+  background:#fff;cursor:pointer;display:flex;align-items:center;gap:13px;
+  font-family:'Fredoka One',cursive;color:#bbb;transition:all .18s;
+  box-shadow:0 2px 6px rgba(0,0,0,.04);
+}
+.intensity-btn .iico{font-size:1.6rem;width:32px;text-align:center;}
+.intensity-btn .iinfo{flex:1;}
+.intensity-btn .iname{font-size:.95rem;display:block;}
+.intensity-btn .idesc{font-size:.62rem;color:#ccc;display:block;margin-top:1px;}
+.intensity-btn .itag{font-size:.62rem;background:rgba(0,0,0,.05);border-radius:50px;
+  padding:2px 8px;color:#bbb;float:right;margin-top:2px;}
+.intensity-btn.sel{border-color:var(--teal);background:rgba(10,191,188,.06);color:var(--teal);}
+.intensity-btn.sel .idesc{color:rgba(10,191,188,.6);}
+.intensity-btn.sel .itag{background:rgba(10,191,188,.12);color:var(--teal);}
+
+/* grade scroll row */
+.grade-scroll{display:flex;gap:7px;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     FLOATING AVATAR (quest screen)
+══════════════════════════════════════ -->
+<div class="av-wrap" id="avWrap" style="display:none">
+  <div class="av-bub" id="avBub">⚔️ Ready for battle!</div>
+  <div class="av-svg" id="avSvg" style="width:108px;height:auto"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 1 — API KEY
+══════════════════════════════════════ -->
+<div class="screen active" id="scKey">
+  <div class="key-card">
+    <span class="key-logo">⚔️</span>
+    <h2>Study Quest</h2>
+    <p>Enter your Anthropic API key to unlock infinite AI-generated quests. Saved on your device only.</p>
+    <input class="key-inp" type="password" id="keyInp" placeholder="sk-ant-api03-…" autocomplete="off" spellcheck="false"/>
+    <div class="key-note">Get your key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> → API Keys. Stored locally on this device only.</div>
+    <div class="err-msg" id="keyErr">⚠️ Key should start with <strong>sk-ant-</strong> — please check and try again.</div>
+    <button class="btn-primary" onclick="saveKey()">🗝️ Enter the Quest!</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 2 — SELECTOR
+══════════════════════════════════════ -->
+<div class="screen" id="scSelect">
+  <div class="sel-header">
+    <div class="sel-header-inner">
+      <div class="sq-logo">⚔️ Study Quest</div>
+      <div class="sq-tagline">Powered by Mom and Dad ❤️</div>
+    </div>
+  </div>
+
+  <!-- Hero Banner -->
+  <div class="hero-banner" id="heroBanner">
+    <div class="hero-girl-wrap" id="hgAlice" onclick="selHero('Alice')">
+      <div class="hg-bub" id="hgBubAlice">Choose me!</div>
+      <div id="hgSvgAlice"></div>
+      <div class="hero-girl-name">Alice</div>
+    </div>
+    <div style="font-family:'Fredoka One',cursive;font-size:1.4rem;color:#ddd">VS</div>
+    <div class="hero-girl-wrap" id="hgLeona" onclick="selHero('Leona')">
+      <div class="hg-bub" id="hgBubLeona">Pick me!</div>
+      <div id="hgSvgLeona"></div>
+      <div class="hero-girl-name">Leona</div>
+    </div>
+  </div>
+
+  <div class="sel-body">
+
+    <!-- QUEST INTENSITY -->
+    <div class="sel-section">
+      <span class="sel-label">⚡ Quest Intensity</span>
+      <div class="intensity-btns">
+        <div class="intensity-btn" onclick="selIntensity('Scout',5)">
+          <span class="iico">🗺️</span>
+          <div class="iinfo">
+            <span class="iname">Scout</span>
+            <span class="idesc">Venture forth and test the waters!</span>
+          </div>
+          <span class="itag">5 questions · ~5 min</span>
+        </div>
+        <div class="intensity-btn" onclick="selIntensity('Battle',8)">
+          <span class="iico">⚔️</span>
+          <div class="iinfo">
+            <span class="iname">Battle</span>
+            <span class="idesc">Steel yourself — the real fight begins!</span>
+          </div>
+          <span class="itag">8 questions · ~10 min</span>
+        </div>
+        <div class="intensity-btn" onclick="selIntensity('Conquer',12)">
+          <span class="iico">👑</span>
+          <div class="iinfo">
+            <span class="iname">Conquer</span>
+            <span class="idesc">Claim the realm — no mercy, no shortcuts!</span>
+          </div>
+          <span class="itag">12 questions · ~20 min</span>
+        </div>
+      </div>
+    </div>
+    <div class="sel-divider"></div>
+
+    <!-- GRADE -->
+    <div class="sel-section">
+      <span class="sel-label">📚 Choose Grade</span>
+      <div class="grade-scroll" id="gradeBtns"></div>
+    </div>
+    <div class="sel-divider"></div>
+
+    <!-- WORLD -->
+    <div class="sel-section">
+      <span class="sel-label">🌍 Choose Your World</span>
+      <div class="world-grid" id="worldGrid"></div>
+    </div>
+    <div class="sel-divider"></div>
+
+    <!-- CATEGORY -->
+    <div class="sel-section" id="catSection" style="display:none">
+      <span class="sel-label">📂 Choose Category</span>
+      <div class="cat-btns" id="catBtns"></div>
+    </div>
+
+    <!-- TOPIC -->
+    <div class="sel-section" id="topicSection" style="display:none">
+      <span class="sel-label">🎯 Choose Topic</span>
+      <div class="topic-btns" id="topicBtns"></div>
+    </div>
+    <div class="sel-divider" id="topicDivider" style="display:none"></div>
+
+    <!-- DIFFICULTY -->
+    <div class="sel-section" id="diffSection" style="display:none">
+      <span class="sel-label">⚔️ Choose Difficulty</span>
+      <div class="diff-btns">
+        <div class="diff-btn" onclick="selDiff('Sprout')">
+          <span class="dico">🌱</span>
+          <div><span class="dname">Sprout</span><span class="ddesc">Just starting — build confidence!</span></div>
+        </div>
+        <div class="diff-btn" onclick="selDiff('Explorer')">
+          <span class="dico">🗺️</span>
+          <div><span class="dname">Explorer</span><span class="ddesc">Grade-level practice — push a little!</span></div>
+        </div>
+        <div class="diff-btn" onclick="selDiff('Warrior')">
+          <span class="dico">⚔️</span>
+          <div><span class="dname">Warrior</span><span class="ddesc">Real challenge — bring your full brain!</span></div>
+        </div>
+        <div class="diff-btn" onclick="selDiff('Legend')">
+          <span class="dico">👑</span>
+          <div><span class="dname">Legend</span><span class="ddesc">Beyond grade level — only the brave!</span></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="begin-btn" id="beginBtn" onclick="beginQuest()" disabled>✨ Begin Quest!</button>
+    <button class="changekey-lnk" onclick="changeKey()">Change API key</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 3 — LOADING
+══════════════════════════════════════ -->
+<div class="screen" id="scLoad">
+  <div class="load-heroes" id="loadHeroes"></div>
+  <div class="load-spell-title" id="loadTitle">🔮 Opening the Portal…</div>
+  <div class="load-spell-sub"   id="loadSub">Summoning your quest scroll…</div>
+  <div class="load-dots">
+    <div class="load-dot"></div>
+    <div class="load-dot"></div>
+    <div class="load-dot"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 4 — QUEST
+══════════════════════════════════════ -->
+<div class="screen" id="scQuest">
+  <div class="qhdr">
+    <div class="badge-slot"><div class="badge" id="bdg"></div></div>
+    <div class="qhdr-inner">
+      <div class="qtitle" id="qTitle">Quest</div>
+      <div class="qpills" id="qPills"></div>
+    </div>
+  </div>
+  <div class="qbody" id="qBody"></div>
+  <div class="submit-area">
+    <button class="submit-btn" onclick="finalCheck()">🏆 Submit Quest!</button>
+    <button class="newquest-btn" onclick="goSelector()">↩ Choose New Quest</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     FINALE OVERLAY
+══════════════════════════════════════ -->
+<div class="fin-ov" id="finOv">
+  <div class="fin-suc" id="finSuc">
+    <div class="fin-emoji">🏆</div>
+    <div class="ydi">QUEST COMPLETE!</div>
+    <div class="fin-score" id="finScore"></div>
+    <div class="fin-time"  id="finTime"></div>
+    <button class="fin-btn newq" onclick="goSelector()">⚔️ New Quest!</button>
+  </div>
+  <div class="fin-cmb" id="finCmb">
+    <div class="fin-emoji" style="animation-delay:.2s">😤</div>
+    <div class="cmb-ttl" id="cmbTtl"></div>
+    <div class="cmb-msg" id="cmbMsg"></div>
+    <div class="cmb-time" id="cmbTime"></div>
+    <button class="fin-btn retry" onclick="retryQuest()">💪 Try Again!</button>
+    <button class="fin-btn newq" style="margin-top:6px;animation-delay:.4s" onclick="goSelector()">⚔️ New Quest</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+//  ONTARIO CURRICULUM DATA
+// ══════════════════════════════════════════════════════
+const CURRICULUM = {
+  "word-forge":{
+    name:"The Word Forge",icon:"📖",subject:"English Language Arts",
+    categories:{
+      "Reading":{icon:"👁️",topics:{"SK":["Letter Recognition","Phonological Awareness","Print Concepts","Listening to Stories"],"1":["Phonics & Decoding","Sight Words","Simple Comprehension","Retelling Stories"],"2":["Reading Fluency","Story Sequencing","Asking Questions","Making Connections"],"3":["Reading Comprehension","Story Elements","Main Idea & Details","Making Predictions"],"4":["Reading Comprehension","Summarizing","Author's Purpose","Compare & Contrast"],"5":["Reading Comprehension","Inferencing","Text Features","Point of View"],"6":["Reading Comprehension","Analysing Fiction","Analysing Non-Fiction","Theme & Symbolism"],"7":["Reading Comprehension","Critical Analysis","Media Literacy","Evaluating Sources"],"8":["Literary Analysis","Argument in Texts","Synthesizing Sources","Bias & Perspective"],"9":["Literary Analysis","Comparative Reading","Non-Fiction Analysis","Research Skills"],"10":["Advanced Literary Analysis","Critical Reading","Media Analysis","Academic Reading"],"11":["Canadian Literature","World Literature","Independent Reading","Scholarly Sources"],"12":["Literary Criticism","Extended Reading","Independent Research","University-Level Analysis"]}},
+      "Writing":{icon:"✍️",topics:{"SK":["Drawing to Communicate","Letter Tracing","Labelling Pictures","Dictating Stories"],"1":["Printing Letters","Writing Simple Sentences","Personal Narratives","Descriptive Writing"],"2":["Sentence Variety","Recount Writing","Simple Reports","Editing Basics"],"3":["Paragraph Writing","Descriptive Writing","Narrative Writing","Sentence Writing"],"4":["Paragraph Structure","Persuasive Writing","Report Writing","Descriptive Writing"],"5":["Essay Structure","Persuasive Writing","Narrative Writing","Research Writing"],"6":["Essay Writing","Argumentative Writing","Creative Writing","Research Reports"],"7":["Advanced Essays","Argumentative Writing","Literary Analysis","Research Writing"],"8":["Research Papers","Argumentative Essays","Creative Non-Fiction","Style & Voice"],"9":["Formal Essays","Research Papers","Short Stories","Reflective Writing"],"10":["Extended Essays","Literary Essays","Persuasive Writing","Portfolio Writing"],"11":["Independent Writing","Advanced Research","Rhetorical Writing","Creative Writing"],"12":["Major Research Paper","Literary Essay","University Application Writing","Portfolio"]}},
+      "Grammar":{icon:"🔤",topics:{"SK":["Naming Words","Action Words","Describing Words","Simple Sentences"],"1":["Capital Letters","End Punctuation","Nouns & Verbs","Simple Sentences"],"2":["Proper Nouns","Question Marks","Adjectives","Compound Sentences"],"3":["Nouns & Pronouns","Verbs & Tenses","Adjectives","Punctuation Basics"],"4":["Parts of Speech","Verb Tenses","Adverbs","Punctuation & Capitalization"],"5":["Complex Sentences","Subject & Predicate","Clauses","Apostrophes & Commas"],"6":["Sentence Types","Active & Passive Voice","Figurative Language","Semicolons & Colons"],"7":["Advanced Grammar","Syntax & Style","Figurative Language","Word Origins & Etymology"],"8":["Complex Syntax","Rhetoric & Style","Advanced Punctuation","Grammar for Effect"],"9":["Style & Tone","Syntax Variety","Sophisticated Punctuation","Diction"],"10":["Advanced Style","Grammar in Context","Rhetorical Devices","Register & Tone"],"11":["Stylistic Choices","Advanced Rhetoric","Grammar for University","Language & Power"],"12":["Mastery of Style","Editing & Proofreading","Academic Writing Conventions","Grammar Review"]}},
+      "Vocabulary & Spelling":{icon:"🔡",topics:{"SK":["Letter Sounds","Rhyming Words","Sight Words (simple)","Environmental Print"],"1":["Spelling CVC Words","High Frequency Words","Word Families","Beginning & Ending Sounds"],"2":["Spelling Patterns","Compound Words","Simple Prefixes","Antonyms & Synonyms"],"3":["Spelling Patterns","Synonyms & Antonyms","Compound Words","Prefixes & Suffixes"],"4":["Spelling Rules","Context Clues","Homophones","Word Families"],"5":["Advanced Spelling","Root Words","Multiple Meaning Words","Idioms"],"6":["Vocabulary Building","Greek & Latin Roots","Connotation & Denotation","Idioms & Proverbs"],"7":["Advanced Vocabulary","Etymology","Academic Language","Nuance in Word Choice"],"8":["Domain-Specific Vocabulary","Word Relationships","Figurative Expressions","Academic Words"],"9":["Literary Vocabulary","Advanced Etymology","Allusions","Academic Vocabulary"],"10":["Critical Vocabulary","Rhetorical Terms","Advanced Idioms","Vocabulary in Context"],"11":["University Vocabulary","Scholarly Terms","Language Precision","Vocabulary for Analysis"],"12":["Advanced Academic Vocabulary","Technical Writing Terms","Precision in Language","Vocabulary Mastery"]}}
+    }
+  },
+  "number-realm":{
+    name:"The Number Realm",icon:"🔢",subject:"Mathematics",
+    categories:{
+      "Number Sense":{icon:"🔢",topics:{"SK":["Counting to 10","Recognizing Numbers","More & Less","Sorting & Grouping"],"1":["Counting to 100","Number Order","Even & Odd","Place Value Tens & Ones"],"2":["Place Value to 1000","Comparing Numbers","Skip Counting by 2s 5s 10s","Fractions Halves & Quarters"],"3":["Place Value to 1000","Comparing Numbers","Rounding","Skip Counting"],"4":["Place Value to 10000","Fractions Intro","Decimals Intro","Factors & Multiples"],"5":["Fractions & Decimals","Percents Intro","Integers Intro","Prime & Composite Numbers"],"6":["Fractions Operations","Decimals & Percents","Ratios & Rates","Integers"],"7":["Integer Operations","Fractions & Mixed Numbers","Percents & Proportions","Exponents"],"8":["Square Roots","Pythagorean Theorem","Scientific Notation","Number Systems"],"9":["Real Numbers","Rational & Irrational","Absolute Value","Number Theory"],"10":["Functions & Relations","Domain & Range","Sequences","Limits Intro"],"11":["Logarithms & Exponents","Sequences & Series","Counting Principles","Proof by Induction"],"12":["Advanced Functions","Vectors","Complex Numbers","Calculus Intro"]}},
+      "Operations":{icon:"➕",topics:{"SK":["Adding Objects","Taking Away","Joining Groups","Number Stories"],"1":["Addition to 20","Subtraction to 20","Number Bonds","Word Problems"],"2":["Addition to 100","Subtraction to 100","Basic Multiplication","Word Problems"],"3":["Addition & Subtraction","Multiplication Intro","Division Intro","Word Problems"],"4":["Multiplication","Long Division","Order of Operations","Multi-step Problems"],"5":["Multiplying Decimals","Dividing Decimals","Adding Fractions","Subtracting Fractions"],"6":["Multiplying Fractions","Dividing Fractions","Order of Operations","Multi-step Problems"],"7":["Integer Operations","Fraction Operations","Decimal Operations","Algebraic Expressions"],"8":["Operations with Radicals","Polynomial Operations","Rational Expressions","Complex Fractions"],"9":["Polynomial Operations","Factoring","Rational Expressions","Solving Equations"],"10":["Quadratic Operations","Rational Functions","Trigonometric Operations","Logarithms"],"11":["Trigonometric Identities","Polynomial Division","Exponential Equations","Combinatorics"],"12":["Calculus Operations","Derivatives","Integrals","Differential Equations Intro"]}},
+      "Geometry":{icon:"📐",topics:{"SK":["Shapes Around Us","Circles Squares Triangles","Position Words","Sorting Shapes"],"1":["2D Shapes","3D Shapes","Inside & Outside","Patterns with Shapes"],"2":["Sides & Corners","Symmetry","Slides & Turns","Measuring Length"],"3":["2D Shapes","3D Shapes","Symmetry","Perimeter"],"4":["Angles","Triangles & Quadrilaterals","Area & Perimeter","Coordinate Grid"],"5":["Area of Shapes","Volume Intro","Transformations","Coordinate Plane"],"6":["Area of Complex Shapes","Volume & Surface Area","Transformations","Angles in Polygons"],"7":["Circle Geometry","Surface Area","Volume of Prisms","Geometric Relationships"],"8":["Pythagorean Theorem","Similar & Congruent Figures","Geometric Proofs","Coordinate Geometry"],"9":["Analytic Geometry","Parallel & Perpendicular Lines","Circle Theorems","Geometric Reasoning"],"10":["Trigonometry","Sine Cosine Tangent","Geometric Proofs","Circle Geometry Advanced"],"11":["Advanced Trigonometry","Vectors","3D Geometry","Geometric Transformations"],"12":["Calculus & Geometry","Area Under Curves","Volumes of Revolution","Geometric Applications"]}},
+      "Patterning & Algebra":{icon:"🔣",topics:{"SK":["Repeating Patterns","Making Patterns","What Comes Next","Sorting by Rule"],"1":["Growing Patterns","Shrinking Patterns","Pattern Core","Number Patterns"],"2":["Number Patterns","Input Output","Simple Equations","Balance Scales"],"3":["Number Patterns","Growing Patterns","Shrinking Patterns","Input/Output Tables"],"4":["Number Patterns","Equations Intro","Variables Intro","Function Tables"],"5":["Algebraic Expressions","Solving Equations","Pattern Rules","Graphing Patterns"],"6":["Algebra Expressions","Solving Equations","Linear Patterns","Graphing Relations"],"7":["Linear Equations","Solving for Variables","Graphing Linear Relations","Inequalities"],"8":["Linear Systems","Quadratic Patterns","Algebraic Modelling","Slope & Intercept"],"9":["Linear & Quadratic","Factoring","Systems of Equations","Algebraic Reasoning"],"10":["Quadratic Functions","Exponential Functions","Transformations of Functions","Solving Systems"],"11":["Polynomial Functions","Rational Functions","Exponential & Log Functions","Function Transformations"],"12":["Advanced Functions","Calculus Intro","Limits","Derivatives & Applications"]}},
+      "Data & Probability":{icon:"📊",topics:{"SK":["Sorting & Classifying","Making Simple Graphs","More Than Less Than","Guessing & Checking"],"1":["Concrete Graphs","Pictographs","Collecting Data","Likely & Unlikely"],"2":["Bar Graphs","Tally Charts","Surveys","Simple Probability"],"3":["Collecting Data","Bar Graphs","Pictographs","Probability Intro"],"4":["Data Collection","Bar & Line Graphs","Mean & Mode","Probability"],"5":["Mean Median Mode","Stem & Leaf Plots","Probability Fractions","Circle Graphs"],"6":["Statistics","Histograms","Probability with Fractions","Experimental Probability"],"7":["Central Tendency","Scatter Plots","Theoretical Probability","Data Analysis"],"8":["Sampling Methods","Two-Variable Statistics","Probability Models","Statistical Inference"],"9":["Regression & Correlation","Probability Theory","Combinatorics","Statistical Analysis"],"10":["Normal Distribution","Confidence Intervals","Hypothesis Testing","Data Modeling"],"11":["Permutations & Combinations","Probability Distributions","Statistics & Inference","Binomial Theorem"],"12":["Advanced Statistics","Statistical Proof","Data Science Intro","Probability Calculus"]}},
+      "Measurement":{icon:"📏",topics:{"SK":["Big & Small","Long & Short","Heavy & Light","Full & Empty"],"1":["Non-Standard Measurement","Comparing Length","Ordering by Size","Time on the Hour"],"2":["Standard Units","Estimating Length","Mass & Capacity","Reading Clocks"],"3":["Length & Distance","Mass & Weight","Capacity","Time"],"4":["Converting Units","Area","Perimeter","Time & Money"],"5":["Converting Metric Units","Area of Triangles","Volume Intro","Elapsed Time"],"6":["Surface Area","Volume of Prisms","Metric & Imperial","Rates & Unit Rates"],"7":["Circle Measurements","Volume of Cylinders","Unit Conversions","Rates & Proportions"],"8":["Composite Area","Volume of Complex Solids","Precision & Accuracy","Measurement Error"],"9":["Trigonometric Measurement","Arc Length","Sector Area","3D Measurement"],"10":["Measurement in Trigonometry","Radian Measure","Measurement in Functions","Optimization"],"11":["Measurement in Calculus","Integral as Measurement","Related Rates","Applied Measurement"],"12":["Calculus Measurement","Volume of Revolution","Advanced Applications","Measurement Proofs"]}}
+    }
+  },
+  "realm-of-worlds":{
+    name:"Realm of Worlds",icon:"🌍",subject:"Social Studies",
+    categories:{
+      "Communities & People":{icon:"🏘️",topics:{"SK":["My Family","My School","People Who Help Us","Rules & Responsibilities"],"1":["My Community","Needs & Wants","Families Around the World","Rights & Fairness"],"2":["Urban & Rural","Community Services","Traditions & Celebrations","Belonging"],"3":["Local Community","Urban & Rural Communities","Community Helpers","Indigenous Communities"],"4":["Early Settlers","Pioneer Life","Indigenous Peoples","Cultural Communities"],"5":["Canadian Identity","Immigration","Cultural Diversity","Rights & Responsibilities"],"6":["Local Government","Canadian Government","Democracy","Civic Responsibility"],"7":["Ancient Civilizations","Medieval Societies","Cultural Exchange","Social Structures"],"8":["Renaissance & Reformation","Colonial Society","Industrial Society","Modern Society"],"9":["Canadian Society Today","Political Systems","Economic Systems","Social Justice"],"10":["World Societies","Global Issues","Human Rights","International Relations"],"11":["Canadian History 1900s","World Wars","Cold War","Modern Canada"],"12":["Contemporary Global Issues","Genocide & Memory","Social Movements","Shaping the Future"]}},
+      "Geography":{icon:"🗺️",topics:{"SK":["My Neighbourhood","Land & Water","Weather Today","Directions"],"1":["Maps of School","Our Town","Seasons & Weather","Natural Features"],"2":["Community Maps","Ontario Geography","Landforms","Protecting Nature"],"3":["Maps & Globes","Landforms","Bodies of Water","Our Province"],"4":["Provinces & Territories","Canadian Geography","Natural Resources","Climate Regions"],"5":["World Regions","Physical Geography","Human Geography","Environmental Issues"],"6":["World Geography","Climate & Biomes","Population Distribution","Resource Management"],"7":["Physical Systems","Human Systems","Geographic Inquiry","Sustainability"],"8":["Geopolitics","Economic Geography","Migration Patterns","Environmental Geography"],"9":["Canadian Geographic Issues","Urban & Rural Planning","Natural Resource Management","Climate Change"],"10":["Global Geographic Systems","World Economic Patterns","Environmental Crises","Geographic Perspectives"],"11":["Canadian Geographic Challenges","Global Food Systems","Urbanization","Sustainable Development"],"12":["Geographic Research","Global Sustainability","Resource Futures","Environmental Policy"]}},
+      "History & Heritage":{icon:"🏛️",topics:{"SK":["Stories from the Past","My Family History","Celebrations","Changes Over Time"],"1":["Then & Now","Significant People","Historical Artefacts","Community History"],"2":["Local History","Indigenous History","Early Explorers","Settlement Stories"],"3":["Family History","Community History","Local Heritage","Traditions & Celebrations"],"4":["Early Canada","First Nations History","European Exploration","Colonial Times"],"5":["Confederation","Canadian History 1800s","Immigration History","Industrialization"],"6":["Medieval History","Renaissance","Age of Exploration","Revolutionary Period"],"7":["Ancient Greece & Rome","Medieval Europe","Indigenous Histories","World Heritage"],"8":["Renaissance Europe","Industrial Revolution","Colonialism","Resistance Movements"],"9":["Canada 1900–1929","World War I","The Great Depression","Social Change"],"10":["World War II","Cold War","Decolonization","Rights Movements"],"11":["Canada Since 1945","Globalization","The 1960s–80s","Contemporary Canada"],"12":["Genocide Studies","Historical Memory","Global History Themes","Historical Methodology"]}}
+    }
+  },
+  "lab-of-wonders":{
+    name:"The Lab of Wonders",icon:"⚗️",subject:"Science & Technology",
+    categories:{
+      "Life Systems":{icon:"🌿",topics:{"SK":["Living & Non-Living","Plants Around Us","Animals Around Us","My Body"],"1":["Needs of Living Things","Plant Parts","Animal Groups","Habitats"],"2":["Growth & Change in Animals","Life Cycles","Animal Adaptations","Animal Habitats"],"3":["Plant Life Cycles","Animal Life Cycles","Habitats","Food Chains"],"4":["Habitats & Communities","Food Webs","Adaptations","Human Impact"],"5":["Human Body Systems","Organs & Functions","Health & Disease","Ecosystems"],"6":["Biodiversity","Classification of Living Things","Ecosystems","Sustainable Living"],"7":["Cells & Cell Theory","Organ Systems","Photosynthesis & Respiration","Evolution Intro"],"8":["Cells & Genetics","DNA & Heredity","Evolution","Ecosystems & Biodiversity"],"9":["Biodiversity & Evolution","Photosynthesis & Cellular Respiration","Genetics","Ecosystems"],"10":["Human Biology","Homeostasis","Nervous System","Evolution & Speciation"],"11":["Anatomy & Physiology","Molecular Biology","Genetics & Biotechnology","Ecology"],"12":["Advanced Biology","Biochemistry","Genetic Engineering","Environmental Biology"]}},
+      "Matter & Energy":{icon:"⚡",topics:{"SK":["Hard & Soft","Sink & Float","Hot & Cold","Mixing Materials"],"1":["Properties of Materials","Solid Liquid Gas","Changing Materials","Materials in Our World"],"2":["Properties of Materials","Liquids","Changing Materials","Air & Water"],"3":["Properties of Materials","Solids Liquids Gases","Changes in Materials","Recycling"],"4":["Rocks & Minerals","Properties of Rocks","Soil Science","Conservation"],"5":["Properties of Matter","Physical Changes","Chemical Changes","Solutions & Mixtures"],"6":["Electricity","Circuits","Energy Sources","Conservation of Energy"],"7":["Pure Substances & Mixtures","Elements & Compounds","Physical & Chemical Changes","Atoms Intro"],"8":["Atoms & Elements","Periodic Table","Chemical Reactions","Acids & Bases"],"9":["Matter & Chemical Bonding","Reactions & Equations","Stoichiometry Intro","Solutions Chemistry"],"10":["Organic Chemistry Intro","Electrochemistry","Nuclear Chemistry","Energy & Chemical Change"],"11":["Advanced Chemistry","Thermodynamics","Equilibrium","Acids Bases & Salts"],"12":["AP Chemistry","Organic Chemistry","Chemical Kinetics","Electrochemistry Advanced"]}},
+      "Structures & Mechanisms":{icon:"⚙️",topics:{"SK":["Pushing & Pulling","Building Towers","Wheels & Ramps","Things That Move"],"1":["Strong & Stable Structures","Movement","Forces","Simple Machines"],"2":["Moving Objects","Mechanisms","Structures & Forces","Design Challenges"],"3":["Strong Structures","Forces & Stability","Simple Machines","Building Design"],"4":["Pulleys & Gears","Mechanical Systems","Forces","Engineering Design"],"5":["Forces Acting on Structures","Load & Strength","Mechanisms","Design Process"],"6":["Flight","Forces of Flight","Aircraft Design","Space Exploration"],"7":["Form & Function","Structural Efficiency","Mechanical Advantage","Technological Systems"],"8":["Fluid Systems","Hydraulics & Pneumatics","Mechanical Engineering","Robotics Intro"],"9":["Forces & Motion","Energy Transformations","Mechanical Systems","Engineering Design"],"10":["Kinematics","Dynamics","Energy Systems","Wave Technology"],"11":["Momentum & Collisions","Fields","Modern Physics Intro","Engineering Principles"],"12":["Physics Applications","Advanced Mechanics","Electromagnetism","Quantum Physics Intro"]}},
+      "Earth & Space":{icon:"🌍",topics:{"SK":["Day & Night","Sun Moon Stars","Weather","Seasons"],"1":["Daily & Seasonal Change","The Sun","Moon Phases","Weather Patterns"],"2":["Soils","Air & Water","Weather & Climate","Caring for the Earth"],"3":["Soils in the Environment","Weathering & Erosion","Water on Earth","Seasons"],"4":["Rocks & the Rock Cycle","Erosion & Deposition","Natural Disasters","Earth's Layers"],"5":["Weather & Climate","Water Cycle","Climate Change","Natural Disasters"],"6":["Space Exploration","Solar System","Stars & Galaxies","Earth in Space"],"7":["Heat in the Environment","Climate Systems","Earth's History","Plate Tectonics"],"8":["Earth's Systems","Water Systems","Atmospheric Science","Geology"],"9":["Climate Change Science","Astronomy","Earth Systems","Geologic Time"],"10":["Physics of Earth","Electromagnetic Spectrum","Nuclear Physics","Astrophysics Intro"],"11":["Environmental Physics","Climate Modelling","Space Science","Earth Science Research"],"12":["Advanced Earth Science","Environmental Chemistry","Climate Policy","Astrophysics"]}}
+    }
+  },
+  "francoria":{
+    name:"Françoria",icon:"🥐",subject:"French as a Second Language",
+    categories:{
+      "Communication orale":{icon:"🗣️",topics:{"SK":["Bonjour! Greetings","Numbers 1-10","Colours","Animals"],"1":["Introductions","Body Parts","Classroom Objects","Days of the Week"],"2":["Family Members","Months & Seasons","Foods","Feelings"],"3":["Greetings & Introductions","Numbers 1-100","Colours & Shapes","Family Members"],"4":["School Vocabulary","Daily Routines","Food & Meals","Weather & Seasons"],"5":["Describing People","Hobbies & Activities","Community Places","Shopping"],"6":["Expressing Opinions","Making Plans","Travel & Directions","Cultural Celebrations"],"7":["Debating & Discussing","News & Current Events","Francophone Culture","Social Issues"],"8":["Formal Discussions","Presentations in French","Current Events","Cultural Exchange"],"9":["Oral Debates","Persuasive Speaking","Interviews","Francophone World"],"10":["Advanced Oral Communication","Academic Discussion","Media French","Nuanced Expression"],"11":["Independent Speaking","Research Presentations","Literary Discussion","Formal Register"],"12":["Mastery of Oral French","University Preparation","Cultural Immersion","Oral Examinations"]}},
+      "Lecture":{icon:"📚",topics:{"SK":["Picture Books in French","Letter Sounds","Simple Words","Shared Reading"],"1":["Simple French Sentences","High Frequency French Words","Short Texts","Reading Aloud"],"2":["Simple Stories","Identifying Details","French Poems","Guided Reading"],"3":["Reading Simple Sentences","Identifying Keywords","Short Stories","Picture Books"],"4":["Reading Short Texts","Comprehension Questions","French Stories","Poems"],"5":["Reading Paragraphs","Main Idea in French","French Magazines","Recipes"],"6":["Reading Articles","Analysing French Texts","French Literature Intro","Newspapers"],"7":["Advanced Reading","Literary Texts","Critical Reading in French","Media Texts"],"8":["Reading Authentic Texts","Literary Analysis in French","News Analysis","Advanced Comprehension"],"9":["Francophone Literature","Critical Analysis","Poetry in French","Non-Fiction"],"10":["Advanced Literary Analysis","Québécois Literature","World Francophone Texts","Scholarly Reading"],"11":["Independent Reading in French","Literary Criticism","Research in French","Classic Literature"],"12":["University-Level French Reading","Thesis Reading","Advanced Literature","French Media"]}},
+      "Grammaire":{icon:"📝",topics:{"SK":["Naming Words","Action Words","Word Matching","Simple Phrases"],"1":["Gender of Nouns","Definite Articles","Simple Verbs","Sentence Structure"],"2":["Indefinite Articles","Adjectives Basics","Present Tense","Negation Intro"],"3":["Gender of Nouns","Singular & Plural","Basic Verbs (être avoir)","Articles"],"4":["Present Tense Verbs","Adjective Agreement","Negation","Questions"],"5":["Regular Verb Conjugation","Irregular Verbs","Passé Composé Intro","Pronouns"],"6":["Passé Composé","Imparfait Intro","Object Pronouns","Prepositions"],"7":["Imparfait","Futur Simple","Subjunctive Intro","Complex Sentences"],"8":["Conditionnel","Subjonctif","Relative Clauses","Advanced Verb Tenses"],"9":["Advanced Tenses","Reported Speech","Passive Voice","Stylistic Grammar"],"10":["Mastery of Tenses","Complex Syntax","Grammar for Writing","Advanced Subordination"],"11":["Grammar for Literature","Nuanced Expression","Style & Register","Error Analysis"],"12":["Grammar Mastery","University Writing","Advanced Syntax","Grammar Review"]}}
+    }
+  },
+  "arena-of-champions":{
+    name:"Arena of Champions",icon:"🏃",subject:"Health & Physical Education",
+    categories:{
+      "Healthy Living":{icon:"🥦",topics:{"SK":["Healthy Foods","Brushing Teeth","Washing Hands","Getting Sleep"],"1":["Food Groups","Active Bodies","Keeping Safe","Feelings & Emotions"],"2":["Healthy Choices","Sun Safety","Stranger Safety","Managing Feelings"],"3":["Food Groups & Nutrition","Healthy Habits","Sleep & Rest","Personal Hygiene"],"4":["Balanced Diet","Physical Activity Benefits","Stress Management","Safety Rules"],"5":["Nutrients & Health","Body Image","Mental Health Basics","Substance Awareness"],"6":["Healthy Relationships","Puberty & Growth","Mental Health","Decision Making"],"7":["Nutrition Science","Fitness & Wellness","Mental Health Strategies","Healthy Relationships"],"8":["Adolescent Health","Substance Use & Abuse","Healthy Sexuality","Emotional Wellbeing"],"9":["Personal Wellness Plan","Stress & Coping","Relationships & Boundaries","Community Health"],"10":["Health Promotion","Disease Prevention","Mental Health Advocacy","Healthy Lifestyles"],"11":["Advanced Nutrition","Mental Health in Society","Health Research","Independent Wellness"],"12":["Lifetime Fitness","Health Careers","Community Wellness","Personal Health Mastery"]}},
+      "Movement Competency":{icon:"🏅",topics:{"SK":["Running & Jumping","Throwing & Catching","Dancing","Movement Games"],"1":["Locomotor Skills","Manipulative Skills","Simple Games","Body Awareness"],"2":["Throwing & Catching","Kicking","Balance & Agility","Team Activities"],"3":["Locomotor Skills","Non-Locomotor Skills","Manipulative Skills","Body Awareness"],"4":["Fundamental Movement","Sport Skills","Balance & Coordination","Fitness Concepts"],"5":["Sport Techniques","Fitness Components","Movement Strategies","Team Sports"],"6":["Advanced Sport Skills","Fitness Principles","Tactical Awareness","Individual Sports"],"7":["Sport Strategy","Training Principles","Biomechanics Intro","Fitness Planning"],"8":["Advanced Sport Skills","Fitness Testing","Training Plans","Competitive Strategy"],"9":["Sport Science","Fitness Assessment","Sport-Specific Skills","Performance Analysis"],"10":["Advanced Athletics","Coaching Basics","Sport Psychology","Elite Performance"],"11":["Sport Leadership","Fitness Programming","Sport & Community","Advanced Skills"],"12":["Lifetime Physical Activity","Sport Management","Physical Literacy","Independent Training"]}},
+      "Living Skills":{icon:"🌟",topics:{"SK":["Sharing & Taking Turns","Listening","Being Kind","Asking for Help"],"1":["Following Rules","Cooperation","Making Friends","Solving Problems"],"2":["Respect & Responsibility","Fair Play","Peer Relationships","Simple Goal Setting"],"3":["Following Rules","Teamwork","Conflict Resolution","Goal Setting"],"4":["Leadership Intro","Cooperation","Fair Play","Self-Regulation"],"5":["Critical Thinking","Communication Skills","Peer Relationships","Resilience"],"6":["Leadership Skills","Community Involvement","Advocacy","Social Responsibility"],"7":["Personal Leadership","Stress Coping Strategies","Empathy & Inclusion","Life Skills"],"8":["Community Leadership","Conflict Mediation","Social Action","Identity & Self"],"9":["Civic Engagement","Independent Decision Making","Advocacy in Action","Life Planning"],"10":["Social Responsibility","Environmental Action","Leadership in Practice","Future Planning"],"11":["Advanced Leadership","Community Projects","Mentorship","Career & Life Skills"],"12":["Personal Legacy","Community Impact","Leadership Portfolio","Post-Secondary Planning"]}}
+    }
+  },
+  "enchanted-canvas":{
+    name:"The Enchanted Canvas",icon:"🎨",subject:"The Arts — Visual Art",
+    categories:{
+      "Creating & Presenting":{icon:"🖌️",topics:{"SK":["Drawing People","Using Colours","Making Collages","Clay & Play Dough"],"1":["Drawing from Observation","Finger Painting","Simple Printmaking","Paper Sculpture"],"2":["Line & Shape","Warm & Cool Colours","Texture in Art","Simple Weaving"],"3":["Drawing Basics","Painting Techniques","Collage & Mixed Media","Sculpture Intro"],"4":["Colour Theory","Perspective Intro","Printmaking","3D Sculpture"],"5":["Composition & Design","Shading & Value","Watercolour","Mixed Media Art"],"6":["Perspective Drawing","Abstract Art","Photography Intro","Digital Art"],"7":["Advanced Drawing","Painting Styles","Printmaking","Art Installations"],"8":["Expressive Art","Advanced Printmaking","Digital Design","Sculptural Forms"],"9":["Studio Art Skills","Advanced Drawing","Portfolio Building","Artist's Process"],"10":["Advanced Studio Practice","Photography & Film","Conceptual Art","Independent Projects"],"11":["Independent Studio Work","Advanced Techniques","Major Projects","Artist Statements"],"12":["Culminating Studio Work","Exhibition Preparation","Professional Practice","Art Portfolio"]}},
+      "Reflecting & Responding":{icon:"🖼️",topics:{"SK":["Talking About Art","Favourite Colours","Drawing Stories","Art We See"],"1":["Describing Art","What Do I See","Feelings in Art","Artists Who Inspire"],"2":["Art Elements","Canadian Artists","Comparing Art","Art in Our Community"],"3":["Describing Artwork","Art Elements (Line Shape)","Favourite Artists","Art Around Us"],"4":["Art Elements & Principles","Canadian Art","Indigenous Art","Art History Intro"],"5":["Art Movements Intro","Impressionism","Analysing Artwork","Cultural Art"],"6":["Art History","Renaissance Art","Modern Art","Critiquing Artwork"],"7":["Contemporary Art","Art & Society","Global Art Traditions","Art Criticism"],"8":["20th Century Art","Pop Art & Abstraction","Feminist Art","Art Criticism Methods"],"9":["Art Criticism","Art Movements","Canadian Art History","Contextual Analysis"],"10":["Advanced Art History","Critical Theory in Art","Global Contemporary Art","Curatorial Thinking"],"11":["Independent Art Research","Art & Identity","Global Art Debates","Exhibition Critique"],"12":["Scholarly Art Analysis","Art & Power","Legacy & Innovation","Major Critique"]}},
+      "Cultural Contexts":{icon:"🌐",topics:{"SK":["Art Seasons","Community Celebrations","Indigenous Art Intro","Family Art"],"1":["Art in Celebrations","Story Art","Indigenous Patterns","Art Around the World"],"2":["Art Traditions","Storytelling Through Art","Inuit Art","Cultural Crafts"],"3":["Art in Daily Life","Community Art","Cultural Crafts","Seasonal Art"],"4":["Indigenous Art Forms","Global Art Traditions","Art & Storytelling","Environmental Art"],"5":["Canadian Artists","Art & Identity","Street Art & Murals","Art & Technology"],"6":["World Art Traditions","Art & History","Architecture","Film & Animation"],"7":["Contemporary Movements","Social Justice Art","Digital Media","Performance Art"],"8":["Art & Protest","Global Contemporary Movements","Indigenous Contemporary Art","Installation & Concept"],"9":["Art & Society","Cultural Appropriation","Digital Art Culture","Art in the Global Market"],"10":["Art & Political Power","Postmodern Art","Globalized Art Markets","Decolonizing Art"],"11":["Art Activism","Independent Cultural Research","Diverse Traditions","Art & Future"],"12":["Art in the World","Cultural Legacy","Art Policy","Art & Humanity"]}}
+    }
+  },
+  "sonic-kingdom":{
+    name:"The Sonic Kingdom",icon:"🎵",subject:"The Arts — Music",
+    categories:{
+      "Creating & Performing":{icon:"🎼",topics:{"SK":["Singing Songs","Clapping Rhythms","Fast & Slow","Loud & Quiet"],"1":["Simple Songs","Beat & Rhythm","High & Low Sounds","Simple Instruments"],"2":["Singing in Groups","Quarter Notes","Simple Scales","Rhythm Patterns"],"3":["Rhythm & Beat","Simple Melodies","Singing Basics","Playing Percussion"],"4":["Reading Music Intro","Rhythm Patterns","Melodic Patterns","Simple Composition"],"5":["Music Notation","Scales & Keys","Harmony Intro","Composition"],"6":["Music Theory","Major & Minor Scales","Chord Progressions","Composing Melodies"],"7":["Advanced Music Theory","Intervals & Chords","Arranging Music","Original Composition"],"8":["Ensemble Performance","Advanced Notation","Composition Projects","Recording Basics"],"9":["Advanced Performance","Music Technology","Composition & Arranging","Solo & Ensemble"],"10":["Advanced Music Theory","Extended Composition","Music Production","Performance Mastery"],"11":["Independent Performance","Major Composition","Music Portfolio","Advanced Theory"],"12":["Culminating Performance","Major Composition Project","Music Leadership","Professional Practice"]}},
+      "Reflecting & Responding":{icon:"🎧",topics:{"SK":["Happy & Sad Music","Music I Like","Music in Stories","Sounds Around Me"],"1":["Tempo (Fast & Slow)","Loud & Soft","Music Feelings","Favourite Songs"],"2":["Music Elements","Music & Stories","Music Around Us","Canadian Songs"],"3":["Tempo & Dynamics","Mood in Music","Favourite Music","Music in Stories"],"4":["Music Elements","Genre Introduction","Canadian Music","Music & Feelings"],"5":["Musical Genres","Music History Intro","Analysing Music","Cultural Music"],"6":["Music History","Classical Music","World Music","Music Reviews"],"7":["Music Movements","Jazz & Blues","Contemporary Music","Music Criticism"],"8":["20th Century Music","Rock & Popular Music","Film Music","Music Analysis Methods"],"9":["Music Criticism","Historical Music Movements","Canadian Music Heritage","Analytical Listening"],"10":["Advanced Music Analysis","Music & Culture","Global Music Traditions","Critical Reviews"],"11":["Independent Music Research","Music & Society","Advanced Criticism","Music Journalism"],"12":["Scholarly Music Analysis","Music & Identity","Legacy & Influence","Major Critique"]}},
+      "Cultural Contexts":{icon:"🌍",topics:{"SK":["Songs from Many Lands","Drums & Rhythms","Holiday Songs","Music at Home"],"1":["Nursery Rhymes Worldwide","Indigenous Songs","Seasonal Music","Music in Our School"],"2":["Cultural Instruments","Music & Celebrations","Folk Songs","Lullabies"],"3":["Music Around the World","Indigenous Music","Seasonal Songs","Community Music"],"4":["Cultural Music Traditions","Music & Celebrations","Folk Music","Music Technology"],"5":["World Music Traditions","Canadian Music Heritage","Music & Identity","Digital Music"],"6":["Global Music Traditions","Music & Society","Film Music","Music Industry"],"7":["Contemporary Global Music","Music & Social Change","Music Technology","Music Careers"],"8":["Music & Protest","Hip Hop & Social Commentary","Indigenous Music Today","Global Pop"],"9":["Music & Culture Wars","Music & Identity","Canadian Music Industry","World Music Research"],"10":["Music Globalization","Music Rights & Ownership","Decolonizing Music","Digital Culture"],"11":["Independent Cultural Research","Music & Power","Diverse Traditions","Future of Music"],"12":["Music in Society","Cultural Legacy","Music Policy","Music & Humanity"]}}
+    }
+  }
+};
+
+// ══════════════════════════════════════════════════════
+//  HERO GIRL SVGs — 4 armor variations each
+// ══════════════════════════════════════════════════════
+const ALICE_ARMORS = [
+  // 0: Medieval Knight
+  `<svg width="80" height="130" viewBox="0 0 80 130" xmlns="http://www.w3.org/2000/svg">
+    <!-- body/armor -->
+    <rect x="20" y="58" width="40" height="42" rx="8" fill="#a0aec0" stroke="#718096" stroke-width="1.5"/>
+    <rect x="24" y="62" width="32" height="8" rx="3" fill="#718096"/>
+    <!-- chest gem -->
+    <rect x="34" y="72" width="12" height="10" rx="3" fill="#9B59E8"/>
+    <!-- shoulder pads -->
+    <ellipse cx="18" cy="62" rx="10" ry="7" fill="#718096" stroke="#4a5568" stroke-width="1"/>
+    <ellipse cx="62" cy="62" rx="10" ry="7" fill="#718096" stroke="#4a5568" stroke-width="1"/>
+    <!-- arms -->
+    <rect x="6"  y="62" width="13" height="30" rx="6" fill="#a0aec0" stroke="#718096" stroke-width="1"/>
+    <rect x="61" y="62" width="13" height="30" rx="6" fill="#a0aec0" stroke="#718096" stroke-width="1"/>
+    <!-- sword -->
+    <rect x="70" y="40" width="4" height="40" rx="2" fill="#FFD93D"/>
+    <rect x="64" y="56" width="16" height="4" rx="2" fill="#718096"/>
+    <!-- legs -->
+    <rect x="22" y="96" width="14" height="28" rx="6" fill="#718096" stroke="#4a5568" stroke-width="1"/>
+    <rect x="44" y="96" width="14" height="28" rx="6" fill="#718096" stroke="#4a5568" stroke-width="1"/>
+    <!-- boots -->
+    <ellipse cx="29" cy="124" rx="9" ry="5" fill="#4a5568"/>
+    <ellipse cx="51" cy="124" rx="9" ry="5" fill="#4a5568"/>
+    <!-- neck -->
+    <rect x="32" y="48" width="16" height="12" rx="4" fill="#f9c9a0"/>
+    <!-- head -->
+    <ellipse cx="40" cy="36" rx="20" ry="22" fill="#f9c9a0"/>
+    <!-- helmet -->
+    <path d="M20 30 Q20 10 40 8 Q60 10 60 30 L58 38 Q50 34 40 34 Q30 34 22 38 Z" fill="#718096" stroke="#4a5568" stroke-width="1.5"/>
+    <rect x="28" y="28" width="24" height="10" rx="3" fill="#a0c4ff" opacity=".7"/>
+    <!-- eyes -->
+    <ellipse cx="33" cy="36" rx="3.5" ry="3.5" fill="#1a1040"/>
+    <ellipse cx="47" cy="36" rx="3.5" ry="3.5" fill="#1a1040"/>
+    <circle cx="34" cy="35" r="1.2" fill="white"/>
+    <circle cx="48" cy="35" r="1.2" fill="white"/>
+    <!-- smile -->
+    <path d="M34 42 Q40 47 46 42" stroke="#c27b5a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <!-- hair peeking -->
+    <path d="M22 30 Q18 22 24 18" stroke="#2d3748" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M58 30 Q62 22 56 18" stroke="#2d3748" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </svg>`,
+  // 1: Chinese Warrior
+  `<svg width="80" height="130" viewBox="0 0 80 130" xmlns="http://www.w3.org/2000/svg">
+    <!-- robe body -->
+    <path d="M18 58 Q15 80 14 100 L66 100 Q65 80 62 58 Z" fill="#C0392B" stroke="#922B21" stroke-width="1.5"/>
+    <!-- armor plates -->
+    <rect x="22" y="60" width="36" height="8" rx="3" fill="#E74C3C"/>
+    <rect x="22" y="70" width="36" height="8" rx="3" fill="#E74C3C"/>
+    <rect x="22" y="80" width="36" height="8" rx="3" fill="#E74C3C"/>
+    <!-- gold trim -->
+    <rect x="36" y="58" width="8" height="42" rx="2" fill="#FFD93D" opacity=".6"/>
+    <!-- wide sleeves -->
+    <path d="M18 62 Q4 68 2 82 L14 82 Q16 74 20 70 Z" fill="#C0392B" stroke="#922B21" stroke-width="1"/>
+    <path d="M62 62 Q76 68 78 82 L66 82 Q64 74 60 70 Z" fill="#C0392B" stroke="#922B21" stroke-width="1"/>
+    <!-- fan weapon -->
+    <path d="M72 40 Q80 30 76 50" stroke="#FFD93D" stroke-width="3" fill="none"/>
+    <path d="M72 40 Q82 38 76 54" stroke="#FFD93D" stroke-width="2" fill="none"/>
+    <path d="M72 40 Q82 46 74 56" stroke="#FFD93D" stroke-width="2" fill="none"/>
+    <circle cx="72" cy="40" r="3" fill="#E74C3C"/>
+    <!-- legs -->
+    <rect x="24" y="98" width="12" height="26" rx="5" fill="#922B21"/>
+    <rect x="44" y="98" width="12" height="26" rx="5" fill="#922B21"/>
+    <!-- shoes -->
+    <ellipse cx="30" cy="124" rx="8" ry="4" fill="#1a1040"/>
+    <ellipse cx="50" cy="124" rx="8" ry="4" fill="#1a1040"/>
+    <!-- neck -->
+    <rect x="33" y="48" width="14" height="12" rx="4" fill="#f9c9a0"/>
+    <!-- head -->
+    <ellipse cx="40" cy="34" rx="19" ry="21" fill="#f9c9a0"/>
+    <!-- hair bun with ornament -->
+    <ellipse cx="40" cy="14" rx="12" ry="10" fill="#1a1040"/>
+    <rect x="37" y="6" width="6" height="14" rx="3" fill="#FFD93D"/>
+    <circle cx="40" cy="5" r="4" fill="#E74C3C"/>
+    <!-- hair sides -->
+    <path d="M21 26 Q18 34 22 44" stroke="#1a1040" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <path d="M59 26 Q62 34 58 44" stroke="#1a1040" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <!-- eyes -->
+    <path d="M29 35 Q33 32 37 35" stroke="#1a1040" stroke-width="2" fill="none"/>
+    <path d="M43 35 Q47 32 51 35" stroke="#1a1040" stroke-width="2" fill="none"/>
+    <ellipse cx="33" cy="36" rx="2.5" ry="2.5" fill="#1a1040"/>
+    <ellipse cx="47" cy="36" rx="2.5" ry="2.5" fill="#1a1040"/>
+    <circle cx="33.8" cy="35.2" r="1" fill="white"/>
+    <circle cx="47.8" cy="35.2" r="1" fill="white"/>
+    <!-- smile -->
+    <path d="M34 43 Q40 48 46 43" stroke="#c27b5a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <!-- cheeks -->
+    <ellipse cx="26" cy="40" rx="5" ry="3" fill="#ffb3c6" opacity=".5"/>
+    <ellipse cx="54" cy="40" rx="5" ry="3" fill="#ffb3c6" opacity=".5"/>
+  </svg>`,
+  // 2: Japanese Shogun
+  `<svg width="80" height="130" viewBox="0 0 80 130" xmlns="http://www.w3.org/2000/svg">
+    <!-- hakama/body -->
+    <rect x="18" y="58" width="44" height="44" rx="6" fill="#2C3E50" stroke="#1a252f" stroke-width="1.5"/>
+    <!-- chest armor do -->
+    <rect x="22" y="60" width="36" height="26" rx="4" fill="#34495E"/>
+    <rect x="25" y="62" width="30" height="5" rx="2" fill="#1abc9c"/>
+    <rect x="25" y="69" width="30" height="5" rx="2" fill="#1abc9c"/>
+    <rect x="25" y="76" width="30" height="5" rx="2" fill="#1abc9c"/>
+    <!-- mon symbol -->
+    <circle cx="40" cy="72" r="7" fill="#1a252f"/>
+    <circle cx="40" cy="72" r="4" fill="#1abc9c"/>
+    <!-- large shoulder guards osode -->
+    <rect x="4"  y="56" width="16" height="22" rx="4" fill="#2C3E50" stroke="#1abc9c" stroke-width="1.5"/>
+    <rect x="60" y="56" width="16" height="22" rx="4" fill="#2C3E50" stroke="#1abc9c" stroke-width="1.5"/>
+    <!-- katana -->
+    <rect x="62" y="30" width="3" height="50" rx="1.5" fill="#aaa"/>
+    <rect x="56" y="48" width="15" height="4" rx="2" fill="#2C3E50"/>
+    <rect x="61" y="26" width="5" height="8" rx="2" fill="#FFD93D"/>
+    <!-- legs hakama -->
+    <rect x="20" y="100" width="16" height="26" rx="5" fill="#1a252f"/>
+    <rect x="44" y="100" width="16" height="26" rx="5" fill="#1a252f"/>
+    <ellipse cx="28" cy="126" rx="9" ry="4" fill="#2C3E50"/>
+    <ellipse cx="52" cy="126" rx="9" ry="4" fill="#2C3E50"/>
+    <!-- neck -->
+    <rect x="33" y="48" width="14" height="12" rx="4" fill="#f9c9a0"/>
+    <!-- head -->
+    <ellipse cx="40" cy="35" rx="19" ry="20" fill="#f9c9a0"/>
+    <!-- kabuto helmet -->
+    <path d="M20 28 Q20 6 40 4 Q60 6 60 28 L58 36 L22 36 Z" fill="#2C3E50" stroke="#1abc9c" stroke-width="1.5"/>
+    <!-- helmet crest kuwagata -->
+    <path d="M34 4 Q30 -4 36 2" stroke="#FFD93D" stroke-width="2.5" fill="none"/>
+    <path d="M46 4 Q50 -4 44 2" stroke="#FFD93D" stroke-width="2.5" fill="none"/>
+    <circle cx="40" cy="4" r="4" fill="#E74C3C"/>
+    <!-- visor opening -->
+    <rect x="26" y="26" width="28" height="12" rx="4" fill="#f9c9a0"/>
+    <!-- eyes -->
+    <ellipse cx="33" cy="33" rx="3" ry="3" fill="#1a1040"/>
+    <ellipse cx="47" cy="33" rx="3" ry="3" fill="#1a1040"/>
+    <circle cx="34" cy="32" r="1" fill="white"/>
+    <circle cx="48" cy="32" r="1" fill="white"/>
+    <!-- smile -->
+    <path d="M34 40 Q40 45 46 40" stroke="#c27b5a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <!-- cheeks -->
+    <ellipse cx="26" cy="37" rx="5" ry="3" fill="#ffb3c6" opacity=".5"/>
+    <ellipse cx="54" cy="37" rx="5" ry="3" fill="#ffb3c6" opacity=".5"/>
+  </svg>`,
+  // 3: Egyptian Sorcerer
+  `<svg width="80" height="130" viewBox="0 0 80 130" xmlns="http://www.w3.org/2000/svg">
+    <!-- robe -->
+    <path d="M16 58 Q12 80 10 102 L70 102 Q68 80 64 58 Z" fill="#F0E68C" stroke="#DAA520" stroke-width="1.5"/>
+    <!-- collar usekh -->
+    <path d="M20 60 Q40 50 60 60 L58 70 Q40 62 22 70 Z" fill="#FFD700" stroke="#DAA520" stroke-width="1"/>
+    <!-- collar gems -->
+    <circle cx="30" cy="63" r="3" fill="#9B59E8"/>
+    <circle cx="40" cy="60" r="3" fill="#E74C3C"/>
+    <circle cx="50" cy="63" r="3" fill="#2980B9"/>
+    <!-- staff -->
+    <rect x="68" y="20" width="4" height="72" rx="2" fill="#DAA520"/>
+    <path d="M66 20 Q70 10 74 20" stroke="#DAA520" stroke-width="2.5" fill="rgba(155,89,232,.4)"/>
+    <circle cx="70" cy="12" r="6" fill="#9B59E8"/>
+    <circle cx="70" cy="12" r="3" fill="#FFD700"/>
+    <!-- arms with bracelets -->
+    <path d="M16 65 Q4 72 2 88 L14 86 Q14 76 20 70 Z" fill="#F0E68C" stroke="#DAA520" stroke-width="1"/>
+    <path d="M64 65 Q76 72 78 88 L66 86 Q66 76 60 70 Z" fill="#F0E68C" stroke="#DAA520" stroke-width="1"/>
+    <rect x="2" y="80" width="12" height="5" rx="2" fill="#FFD700"/>
+    <rect x="66" y="80" width="12" height="5" rx="2" fill="#FFD700"/>
+    <!-- legs -->
+    <rect x="24" y="100" width="12" height="26" rx="5" fill="#DAA520"/>
+    <rect x="44" y="100" width="12" height="26" rx="5" fill="#DAA520"/>
+    <ellipse cx="30" cy="126" rx="8" ry="4" fill="#B8860B"/>
+    <ellipse cx="50" cy="126" rx="8" ry="4" fill="#B8860B"/>
+    <!-- neck -->
+    <rect x="33" y="46" width="14" height="14" rx="4" fill="#f9c9a0"/>
+    <!-- head -->
+    <ellipse cx="40" cy="33" rx="19" ry="21" fill="#f9c9a0"/>
+    <!-- nemes headdress -->
+    <path d="M20 24 Q20 6 40 4 Q60 6 60 24 L58 34 L22 34 Z" fill="#FFD700" stroke="#DAA520" stroke-width="1.5"/>
+    <path d="M22 26 Q16 38 18 52" stroke="#FFD700" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <path d="M58 26 Q64 38 62 52" stroke="#FFD700" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <!-- uraeus cobra -->
+    <path d="M38 4 Q36 -2 40 -4 Q44 -2 42 4" fill="#E74C3C"/>
+    <circle cx="40" cy="-4" r="3" fill="#E74C3C"/>
+    <!-- face -->
+    <rect x="26" y="24" width="28" height="14" rx="3" fill="#f9c9a0"/>
+    <!-- kohl eyes -->
+    <path d="M27 32 L33 30 L37 33 L33 34 Z" fill="#1a1040"/>
+    <path d="M53 32 L47 30 L43 33 L47 34 Z" fill="#1a1040"/>
+    <ellipse cx="33" cy="32" rx="2.5" ry="2.5" fill="#1a1040"/>
+    <ellipse cx="47" cy="32" rx="2.5" ry="2.5" fill="#1a1040"/>
+    <circle cx="33.8" cy="31.2" r="1" fill="white"/>
+    <circle cx="47.8" cy="31.2" r="1" fill="white"/>
+    <!-- smile -->
+    <path d="M34 40 Q40 45 46 40" stroke="#c27b5a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <!-- cheeks -->
+    <ellipse cx="26" cy="38" rx="5" ry="3" fill="#ffb3c6" opacity=".4"/>
+    <ellipse cx="54" cy="38" rx="5" ry="3" fill="#ffb3c6" opacity=".4"/>
+  </svg>`
+];
+
+const LEONA_ARMORS = [
+  // 0: Medieval Knight (smaller/cuter)
+  `<svg width="80" height="130" viewBox="0 0 80 130" xmlns="http://www.w3.org/2000/svg">
+    <rect x="22" y="60" width="36" height="40" rx="8" fill="#9B59E8" stroke="#7D3C98" stroke-width="1.5"/>
+    <rect x="26" y="64" width="28" height="8" rx="3" fill="#7D3C98"/>
+    <circle cx="40" cy="78" r="6" fill="#FFD93D"/>
+    <ellipse cx="20" cy="64" rx="9" ry="6" fill="#7D3C98"/>
+    <ellipse cx="60" cy="64" rx="9" ry="6" fill="#7D3C98"/>
+    <rect x="8"  y="64" width="13" height="28" rx="6" fill="#9B59E8" stroke="#7D3C98" stroke-width="1"/>
+    <rect x="59" y="64" width="13" height="28" rx="6" fill="#9B59E8" stroke="#7D3C98" stroke-width="1"/>
+    <!-- cute tiny sword -->
+    <rect x="66" y="44" width="3" height="32" rx="1.5" fill="#FFD93D"/>
+    <rect x="60" y="56" width="15" height="3" rx="1.5" fill="#7D3C98"/>
+    <rect x="24" y="98" width="12" height="26" rx="5" fill="#7D3C98"/>
+    <rect x="44" y="98" width="12" height="26" rx="5" fill="#7D3C98"/>
+    <ellipse cx="30" cy="124" rx="8" ry="4" fill="#5B2C6F"/>
+    <ellipse cx="50" cy="124" rx="8" ry="4" fill="#5B2C6F"/>
+    <rect x="33" y="50" width="14" height="12" rx="4" fill="#fdb99b"/>
+    <ellipse cx="40" cy="37" rx="19" ry="21" fill="#fdb99b"/>
+    <path d="M20 30 Q20 10 40 8 Q60 10 60 30 L58 38 Q50 34 40 34 Q30 34 22 38 Z" fill="#9B59E8" stroke="#7D3C98" stroke-width="1.5"/>
+    <!-- cute star on helmet -->
+    <text x="34" y="28" font-size="10" fill="#FFD93D">★</text>
+    <rect x="28" y="28" width="24" height="10" rx="3" fill="#c9a0ff" opacity=".6"/>
+    <!-- pigtails -->
+    <path d="M20 26 Q10 20 12 30" stroke="#1a1040" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M60 26 Q70 20 68 30" stroke="#1a1040" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <circle cx="11" cy="30" r="4" fill="#FF4F9A"/>
+    <circle cx="69" cy="30" r="4" fill="#FF4F9A"/>
+    <ellipse cx="33" cy="38" rx="3.5" ry="3.5" fill="#1a1040"/>
+    <ellipse cx="47" cy="38" rx="3.5" ry="3.5" fill="#1a1040"/>
+    <circle cx="34" cy="37" r="1.2" fill="white"/>
+    <circle cx="48" cy="37" r="1.2" fill="white"/>
+    <path d="M34 44 Q40 49 46 44" stroke="#c27b5a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <ellipse cx="27" cy="42" rx="5" ry="3" fill="#ffb3c6" opacity=".6"/>
+    <ellipse cx="53" cy="42" rx="5" ry="3" fill="#ffb3c6" opacity=".6"/>
+  </svg>`,
+  // 1: Chinese Warrior
+  `<svg width="80" height="130" viewBox="0 0 80 130" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 58 Q15 80 14 100 L66 100 Q65 80 62 58 Z" fill="#E91E8C" stroke="#B5135F" stroke-width="1.5"/>
+    <rect x="22" y="60" width="36" height="8" rx="3" fill="#F06292"/>
+    <rect x="22" y="70" width="36" height="8" rx="3" fill="#F06292"/>
+    <rect x="22" y="80" width="36" height="8" rx="3" fill="#F06292"/>
+    <rect x="36" y="58" width="8" height="42" rx="2" fill="#FFD93D" opacity=".7"/>
+    <path d="M18 62 Q4 68 2 82 L14 82 Q16 74 20 70 Z" fill="#E91E8C" stroke="#B5135F" stroke-width="1"/>
+    <path d="M62 62 Q76 68 78 82 L66 82 Q64 74 60 70 Z" fill="#E91E8C" stroke="#B5135F" stroke-width="1"/>
+    <!-- butterfly fans -->
+    <path d="M74 38 Q82 28 78 48" stroke="#FFD93D" stroke-width="2.5" fill="none"/>
+    <path d="M74 38 Q84 36 78 52" stroke="#FFD93D" stroke-width="2" fill="none"/>
+    <circle cx="74" cy="38" r="3" fill="#E91E8C"/>
+    <rect x="24" y="98" width="12" height="26" rx="5" fill="#B5135F"/>
+    <rect x="44" y="98" width="12" height="26" rx="5" fill="#B5135F"/>
+    <ellipse cx="30" cy="124" rx="8" ry="4" fill="#1a1040"/>
+    <ellipse cx="50" cy="124" rx="8" ry="4" fill="#1a1040"/>
+    <rect x="33" y="48" width="14" height="12" rx="4" fill="#fdb99b"/>
+    <ellipse cx="40" cy="34" rx="19" ry="21" fill="#fdb99b"/>
+    <!-- twin buns -->
+    <circle cx="26" cy="16" r="9" fill="#1a1040"/>
+    <circle cx="54" cy="16" r="9" fill="#1a1040"/>
+    <circle cx="26" cy="14" r="5" fill="#E91E8C"/>
+    <circle cx="54" cy="14" r="5" fill="#E91E8C"/>
+    <!-- hair -->
+    <path d="M21 26 Q18 34 22 44" stroke="#1a1040" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <path d="M59 26 Q62 34 58 44" stroke="#1a1040" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <path d="M27 35 Q31 32 35 35" stroke="#1a1040" stroke-width="2" fill="none"/>
+    <path d="M45 35 Q49 32 53 35" stroke="#1a1040" stroke-width="2" fill="none"/>
+    <ellipse cx="31" cy="36" rx="2.5" ry="2.5" fill="#1a1040"/>
+    <ellipse cx="49" cy="36" rx="2.5" ry="2.5" fill="#1a1040"/>
+    <circle cx="31.8" cy="35.2" r="1" fill="white"/>
+    <circle cx="49.8" cy="35.2" r="1" fill="white"/>
+    <path d="M33 43 Q40 48 47 43" stroke="#c27b5a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <ellipse cx="26" cy="40" rx="5" ry="3" fill="#ffb3c6" opacity=".6"/>
+    <ellipse cx="54" cy="40" rx="5" ry="3" fill="#ffb3c6" opacity=".6"/>
+  </svg>`,
+  // 2: Japanese Shogun
+  `<svg width="80" height="130" viewBox="0 0 80 130" xmlns="http://www.w3.org/2000/svg">
+    <rect x="18" y="58" width="44" height="44" rx="6" fill="#FF4F9A" stroke="#C0135A" stroke-width="1.5"/>
+    <rect x="22" y="60" width="36" height="26" rx="4" fill="#E91E8C"/>
+    <rect x="25" y="62" width="30" height="5" rx="2" fill="#FFD93D"/>
+    <rect x="25" y="69" width="30" height="5" rx="2" fill="#FFD93D"/>
+    <rect x="25" y="76" width="30" height="5" rx="2" fill="#FFD93D"/>
+    <circle cx="40" cy="72" r="7" fill="#C0135A"/>
+    <!-- cute cherry blossom -->
+    <text x="36" y="76" font-size="8">🌸</text>
+    <rect x="4"  y="56" width="16" height="22" rx="4" fill="#FF4F9A" stroke="#FFD93D" stroke-width="1.5"/>
+    <rect x="60" y="56" width="16" height="22" rx="4" fill="#FF4F9A" stroke="#FFD93D" stroke-width="1.5"/>
+    <rect x="62" y="32" width="3" height="48" rx="1.5" fill="#aaa"/>
+    <rect x="56" y="50" width="15" height="4" rx="2" fill="#C0135A"/>
+    <rect x="61" y="28" width="5" height="8" rx="2" fill="#FFD93D"/>
+    <rect x="20" y="100" width="16" height="26" rx="5" fill="#C0135A"/>
+    <rect x="44" y="100" width="16" height="26" rx="5" fill="#C0135A"/>
+    <ellipse cx="28" cy="126" rx="9" ry="4" fill="#FF4F9A"/>
+    <ellipse cx="52" cy="126" rx="9" ry="4" fill="#FF4F9A"/>
+    <rect x="33" y="48" width="14" height="12" rx="4" fill="#fdb99b"/>
+    <ellipse cx="40" cy="35" rx="19" ry="20" fill="#fdb99b"/>
+    <path d="M20 28 Q20 8 40 6 Q60 8 60 28 L58 36 L22 36 Z" fill="#FF4F9A" stroke="#FFD93D" stroke-width="1.5"/>
+    <!-- cute butterfly crest -->
+    <path d="M35 6 Q30 0 38 4" stroke="#FFD93D" stroke-width="2" fill="none"/>
+    <path d="M45 6 Q50 0 42 4" stroke="#FFD93D" stroke-width="2" fill="none"/>
+    <circle cx="40" cy="6" r="4" fill="#FFD93D"/>
+    <rect x="26" y="26" width="28" height="12" rx="4" fill="#fdb99b"/>
+    <ellipse cx="33" cy="33" rx="3" ry="3" fill="#1a1040"/>
+    <ellipse cx="47" cy="33" rx="3" ry="3" fill="#1a1040"/>
+    <circle cx="34" cy="32" r="1" fill="white"/>
+    <circle cx="48" cy="32" r="1" fill="white"/>
+    <path d="M34 40 Q40 45 46 40" stroke="#c27b5a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <ellipse cx="26" cy="37" rx="5" ry="3" fill="#ffb3c6" opacity=".6"/>
+    <ellipse cx="54" cy="37" rx="5" ry="3" fill="#ffb3c6" opacity=".6"/>
+  </svg>`,
+  // 3: Egyptian Sorcerer
+  `<svg width="80" height="130" viewBox="0 0 80 130" xmlns="http://www.w3.org/2000/svg">
+    <path d="M16 58 Q12 80 10 102 L70 102 Q68 80 64 58 Z" fill="#FF9FF3" stroke="#E056C5" stroke-width="1.5"/>
+    <path d="M20 60 Q40 50 60 60 L58 70 Q40 62 22 70 Z" fill="#FFD93D" stroke="#DAA520" stroke-width="1"/>
+    <circle cx="30" cy="63" r="3" fill="#FF4F9A"/>
+    <circle cx="40" cy="60" r="3" fill="#9B59E8"/>
+    <circle cx="50" cy="63" r="3" fill="#0ABFBC"/>
+    <rect x="68" y="22" width="4" height="70" rx="2" fill="#FFD93D"/>
+    <circle cx="70" cy="14" r="7" fill="#FF4F9A"/>
+    <circle cx="70" cy="14" r="4" fill="#FFD93D"/>
+    <path d="M16 65 Q4 72 2 88 L14 86 Q14 76 20 70 Z" fill="#FF9FF3" stroke="#E056C5" stroke-width="1"/>
+    <path d="M64 65 Q76 72 78 88 L66 86 Q66 76 60 70 Z" fill="#FF9FF3" stroke="#E056C5" stroke-width="1"/>
+    <rect x="2" y="80" width="12" height="5" rx="2" fill="#FFD93D"/>
+    <rect x="66" y="80" width="12" height="5" rx="2" fill="#FFD93D"/>
+    <rect x="24" y="100" width="12" height="26" rx="5" fill="#E056C5"/>
+    <rect x="44" y="100" width="12" height="26" rx="5" fill="#E056C5"/>
+    <ellipse cx="30" cy="126" rx="8" ry="4" fill="#C0135A"/>
+    <ellipse cx="50" cy="126" rx="8" ry="4" fill="#C0135A"/>
+    <rect x="33" y="46" width="14" height="14" rx="4" fill="#fdb99b"/>
+    <ellipse cx="40" cy="33" rx="19" ry="21" fill="#fdb99b"/>
+    <path d="M20 24 Q20 6 40 4 Q60 6 60 24 L58 34 L22 34 Z" fill="#FF9FF3" stroke="#FFD93D" stroke-width="1.5"/>
+    <path d="M22 26 Q16 38 18 52" stroke="#FF9FF3" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <path d="M58 26 Q64 38 62 52" stroke="#FF9FF3" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <path d="M37 4 Q35 -2 40 -4 Q45 -2 43 4" fill="#FF4F9A"/>
+    <circle cx="40" cy="-4" r="3" fill="#FF4F9A"/>
+    <rect x="26" y="24" width="28" height="14" rx="3" fill="#fdb99b"/>
+    <path d="M27 32 L33 30 L37 33 L33 34 Z" fill="#FF4F9A" opacity=".6"/>
+    <path d="M53 32 L47 30 L43 33 L47 34 Z" fill="#FF4F9A" opacity=".6"/>
+    <ellipse cx="33" cy="32" rx="2.5" ry="2.5" fill="#1a1040"/>
+    <ellipse cx="47" cy="32" rx="2.5" ry="2.5" fill="#1a1040"/>
+    <circle cx="33.8" cy="31.2" r="1" fill="white"/>
+    <circle cx="47.8" cy="31.2" r="1" fill="white"/>
+    <path d="M34 40 Q40 45 46 40" stroke="#c27b5a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <ellipse cx="26" cy="38" rx="5" ry="3" fill="#ffb3c6" opacity=".6"/>
+    <ellipse cx="54" cy="38" rx="5" ry="3" fill="#ffb3c6" opacity=".6"/>
+  </svg>`
+];
+
+// ══════════════════════════════════════════════════════
+//  PINGU SVG
+// ══════════════════════════════════════════════════════
+const PINGU_SVG = `<svg width="100" height="170" viewBox="0 0 100 170" xmlns="http://www.w3.org/2000/svg">
+  <!-- body -->
+  <ellipse cx="50" cy="110" rx="32" ry="44" fill="#1a1a1a"/>
+  <ellipse cx="50" cy="118" rx="20" ry="32" fill="#fff"/>
+  <!-- feet -->
+  <ellipse cx="34" cy="156" rx="14" ry="7" fill="#FF7A45" transform="rotate(-10,34,156)"/>
+  <ellipse cx="66" cy="156" rx="14" ry="7" fill="#FF7A45" transform="rotate(10,66,156)"/>
+  <!-- wings -->
+  <path d="M18 100 Q4 112 8 130 L20 124 Q18 114 22 106 Z" fill="#1a1a1a"/>
+  <path d="M82 100 Q96 112 92 130 L80 124 Q82 114 78 106 Z" fill="#1a1a1a"/>
+  <!-- tiny scarf -->
+  <path d="M26 80 Q50 72 74 80 Q70 88 50 86 Q30 88 26 80 Z" fill="#E74C3C"/>
+  <path d="M26 80 Q22 90 20 100" stroke="#E74C3C" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <!-- head -->
+  <ellipse cx="50" cy="58" rx="30" ry="32" fill="#1a1a1a"/>
+  <ellipse cx="50" cy="64" rx="18" ry="20" fill="#fff"/>
+  <!-- eyes -->
+  <circle cx="38" cy="50" r="9" fill="white"/>
+  <circle cx="62" cy="50" r="9" fill="white"/>
+  <circle cx="39" cy="51" r="5" fill="#1a1a1a"/>
+  <circle cx="63" cy="51" r="5" fill="#1a1a1a"/>
+  <circle cx="40" cy="49" r="2" fill="white"/>
+  <circle cx="64" cy="49" r="2" fill="white"/>
+  <!-- beak -->
+  <path d="M42 64 Q50 70 58 64 L54 72 Q50 75 46 72 Z" fill="#FF7A45"/>
+  <!-- blush -->
+  <ellipse cx="30" cy="60" rx="7" ry="4" fill="#ffb3c6" opacity=".5"/>
+  <ellipse cx="70" cy="60" rx="7" ry="4" fill="#ffb3c6" opacity=".5"/>
+</svg>`;
+
+// ══════════════════════════════════════════════════════
+//  EMILY SVG
+// ══════════════════════════════════════════════════════
+const EMILY_SVG = `<svg width="100" height="170" viewBox="0 0 100 170" xmlns="http://www.w3.org/2000/svg">
+  <!-- dress -->
+  <path d="M26 90 Q20 130 18 162 L82 162 Q80 130 74 90 Z" fill="#FF9FF3" stroke="#E056C5" stroke-width="1.5"/>
+  <!-- dress ribs -->
+  <path d="M26 100 Q50 96 74 100" stroke="#E056C5" stroke-width="1.5" fill="none" opacity=".5"/>
+  <path d="M24 112 Q50 108 76 112" stroke="#E056C5" stroke-width="1.5" fill="none" opacity=".5"/>
+  <path d="M22 124 Q50 120 78 124" stroke="#E056C5" stroke-width="1.5" fill="none" opacity=".5"/>
+  <path d="M20 136 Q50 132 80 136" stroke="#E056C5" stroke-width="1.5" fill="none" opacity=".5"/>
+  <!-- white flower -->
+  <circle cx="50" cy="102" r="10" fill="white" stroke="#E056C5" stroke-width="1"/>
+  <circle cx="50" cy="102" r="5" fill="#FFD93D"/>
+  <!-- arms -->
+  <path d="M26 94 Q12 102 10 118 L22 116 Q24 106 28 100 Z" fill="#C8BAD8"/>
+  <path d="M74 94 Q88 102 90 118 L78 116 Q76 106 72 100 Z" fill="#C8BAD8"/>
+  <!-- body/head base -->
+  <ellipse cx="50" cy="72" rx="32" ry="36" fill="#C8BAD8"/>
+  <!-- ears -->
+  <ellipse cx="16" cy="58" rx="14" ry="18" fill="#C8BAD8" stroke="#b0a0c4" stroke-width="1.5"/>
+  <ellipse cx="84" cy="58" rx="14" ry="18" fill="#C8BAD8" stroke="#b0a0c4" stroke-width="1.5"/>
+  <ellipse cx="16" cy="58" rx="8" ry="11" fill="#E8DDED"/>
+  <ellipse cx="84" cy="58" rx="8" ry="11" fill="#E8DDED"/>
+  <!-- face -->
+  <ellipse cx="50" cy="68" rx="28" ry="30" fill="#E8DDED"/>
+  <!-- eyes -->
+  <ellipse cx="38" cy="60" rx="6" ry="6" fill="#C8BAD8"/>
+  <ellipse cx="62" cy="60" rx="6" ry="6" fill="#C8BAD8"/>
+  <ellipse cx="38" cy="61" rx="4" ry="4" fill="#1a1040"/>
+  <ellipse cx="62" cy="61" rx="4" ry="4" fill="#1a1040"/>
+  <circle cx="39" cy="59" r="1.5" fill="white"/>
+  <circle cx="63" cy="59" r="1.5" fill="white"/>
+  <!-- trunk -->
+  <path d="M44 76 Q38 86 40 94 Q42 98 46 96" stroke="#C8BAD8" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <!-- smile -->
+  <path d="M42 74 Q50 80 58 74" stroke="#9070a8" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- cheeks -->
+  <ellipse cx="28" cy="68" rx="8" ry="5" fill="#FFB3C6" opacity=".5"/>
+  <ellipse cx="72" cy="68" rx="8" ry="5" fill="#FFB3C6" opacity=".5"/>
+</svg>`;
+
+// ══════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════
+let API_KEY = localStorage.getItem('sq_key')||'';
+let hero='', grade='', worldKey='', category='', topic='', diff='', intensity='', intensityCount=5;
+let questions=[], attempts={}, hinted={}, T0=0, rawData=null, mcSel={};
+let heroArmorIdx = {Alice:0, Leona:0};
+let idleBubTmr=null;
+
+// ══════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════
+window.onload=()=>{
+  heroArmorIdx.Alice = Math.floor(Math.random()*4);
+  heroArmorIdx.Leona = Math.floor(Math.random()*4);
+  document.getElementById('hgSvgAlice').innerHTML = ALICE_ARMORS[heroArmorIdx.Alice];
+  document.getElementById('hgSvgLeona').innerHTML = LEONA_ARMORS[heroArmorIdx.Leona];
+  buildGradeBtns();
+  buildWorldGrid();
+  if(API_KEY && API_KEY.startsWith('sk-ant-')) show('scSelect');
+  else show('scKey');
+  startHeroSpeech();
+};
+
+function buildGradeBtns(){
+  const c=document.getElementById('gradeBtns');
+  c.innerHTML='';
+  const grades=[{k:'SK',label:'SK'},
+    {k:'1',label:'Gr 1'},{k:'2',label:'Gr 2'},{k:'3',label:'Gr 3'},
+    {k:'4',label:'Gr 4'},{k:'5',label:'Gr 5'},{k:'6',label:'Gr 6'},
+    {k:'7',label:'Gr 7'},{k:'8',label:'Gr 8'},{k:'9',label:'Gr 9'},
+    {k:'10',label:'Gr 10'},{k:'11',label:'Gr 11'},{k:'12',label:'Gr 12'}
+  ];
+  grades.forEach(g=>{
+    const btn=document.createElement('div');
+    btn.className='grade-btn';btn.dataset.g=g.k;
+    btn.textContent=g.label;
+    btn.onclick=()=>selGrade(g.k,btn);
+    c.appendChild(btn);
+  });
+}
+
+// ══════════════════════════════════════════════════════
+//  SCREENS
+// ══════════════════════════════════════════════════════
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+  // show/hide floating avatar
+  document.getElementById('avWrap').style.display = (id==='scQuest')?'block':'none';
+}
+
+// ══════════════════════════════════════════════════════
+//  API KEY
+// ══════════════════════════════════════════════════════
+function saveKey(){
+  const v=document.getElementById('keyInp').value.trim();
+  const e=document.getElementById('keyErr');
+  if(!v.startsWith('sk-ant-')){e.classList.add('show');return;}
+  e.classList.remove('show');
+  API_KEY=v; localStorage.setItem('sq_key',API_KEY);
+  show('scSelect');
+}
+function changeKey(){
+  localStorage.removeItem('sq_key'); API_KEY='';
+  document.getElementById('keyInp').value='';
+  show('scKey');
+}
+document.getElementById('keyInp').addEventListener('keydown',e=>{if(e.key==='Enter')saveKey();});
+
+// ══════════════════════════════════════════════════════
+//  HERO SPEECH — adventure theme, 60s rotation
+// ══════════════════════════════════════════════════════
+const ALICE_LINES=[
+  "⚔️ To the quest!","🌟 For glory and grade A!","🛡️ I fear no exam!",
+  "📖 Knowledge is my sword!","✨ Let's go, warrior!","🏆 Victory awaits!",
+  "🔥 I'm ready for battle!","💫 Sharpen your pencils!","⚡ Let's conquer this!","🗺️ Adventure calls!"
+];
+const LEONA_LINES=[
+  "🌸 Let's do this!","🐘 Emily says noot!","⚔️ I'm the bravest!",
+  "✨ Magic and maths!","🏆 I'll get gold today!","💪 Nothing can stop me!",
+  "🌟 Quest time, let's go!","🎯 Aim for the stars!","🔥 Dragon mode: ON!","🌈 Here we come!"
+];
+function startHeroSpeech(){
+  let ai=0,li=0;
+  const rotate=()=>{
+    const ab=document.getElementById('hgBubAlice');
+    const lb=document.getElementById('hgBubLeona');
+    if(ab) ab.textContent=ALICE_LINES[ai++ % ALICE_LINES.length];
+    if(lb) lb.textContent=LEONA_LINES[li++ % LEONA_LINES.length];
+  };
+  rotate();
+  setInterval(rotate,60000);
+}
+
+// ══════════════════════════════════════════════════════
+//  SELECTOR
+// ══════════════════════════════════════════════════════
+function selIntensity(name, count){
+  intensity=name; intensityCount=count;
+  document.querySelectorAll('.intensity-btn').forEach(b=>b.classList.remove('sel'));
+  event.currentTarget.classList.add('sel');
+  checkBegin();
+}
+function selHero(name){
+  hero=name;
+  document.querySelectorAll('.hero-girl-wrap').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('hg'+name).classList.add('sel');
+  checkBegin();
+}
+function selGrade(g, el){
+  grade=g;
+  document.querySelectorAll('.grade-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+  if(worldKey) buildCategories();
+  checkBegin();
+}
+function buildWorldGrid(){
+  const grid=document.getElementById('worldGrid');
+  grid.innerHTML='';
+  Object.entries(CURRICULUM).forEach(([key,w])=>{
+    const btn=document.createElement('div');
+    btn.className='world-btn';btn.id='w_'+key;
+    btn.innerHTML=`<span class="wico">${w.icon}</span><span class="wname">${w.name}</span><span class="wsub">${w.subject}</span>`;
+    btn.onclick=()=>selWorld(key);
+    grid.appendChild(btn);
+  });
+}
+function selWorld(key){
+  worldKey=key; category=''; topic='';
+  document.querySelectorAll('.world-btn').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('w_'+key).classList.add('sel');
+  document.getElementById('topicSection').style.display='none';
+  document.getElementById('topicDivider').style.display='none';
+  document.getElementById('diffSection').style.display='none';
+  if(grade) buildCategories();
+  else{ document.getElementById('catSection').style.display='none'; }
+  checkBegin();
+}
+function buildCategories(){
+  const cats=CURRICULUM[worldKey].categories;
+  const catBtns=document.getElementById('catBtns');
+  catBtns.innerHTML='';
+  Object.entries(cats).forEach(([name,c])=>{
+    const btn=document.createElement('div');
+    btn.className='cat-btn';
+    btn.innerHTML=`<span class="cico">${c.icon}</span><span class="cname">${name}</span>`;
+    btn.onclick=()=>selCategory(name);
+    catBtns.appendChild(btn);
+  });
+  document.getElementById('catSection').style.display='block';
+}
+function selCategory(name){
+  category=name; topic='';
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('sel'));
+  event.currentTarget.classList.add('sel');
+  buildTopics();
+  document.getElementById('diffSection').style.display='none';
+  checkBegin();
+}
+function buildTopics(){
+  const topics=CURRICULUM[worldKey].categories[category].topics[grade]||[];
+  const topicBtns=document.getElementById('topicBtns');
+  topicBtns.innerHTML='';
+  topics.forEach(t=>{
+    const btn=document.createElement('div');
+    btn.className='topic-btn';
+    btn.textContent='📌 '+t;
+    btn.onclick=()=>selTopic(t,btn);
+    topicBtns.appendChild(btn);
+  });
+  document.getElementById('topicSection').style.display='block';
+  document.getElementById('topicDivider').style.display='block';
+}
+function selTopic(t,el){
+  topic=t;
+  document.querySelectorAll('.topic-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('diffSection').style.display='block';
+  checkBegin();
+}
+function selDiff(d){
+  diff=d;
+  document.querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('sel'));
+  event.currentTarget.classList.add('sel');
+  checkBegin();
+}
+function checkBegin(){
+  document.getElementById('beginBtn').disabled=!(hero&&grade&&worldKey&&category&&topic&&diff&&intensity);
+}
+
+// ══════════════════════════════════════════════════════
+//  LOADING SCREEN — hero + avatar, spell messages
+// ══════════════════════════════════════════════════════
+const SPELL_MSGS=[
+  ['🔮 Opening the Portal…',       'The mystical gateway crackles with energy…'],
+  ['⚗️ Brewing the Quest Potion…', 'Ancient ingredients bubble in the cauldron…'],
+  ['📜 Summoning the Quest Scroll…','The enchanted parchment appears from thin air…'],
+  ['⚔️ Sharpening Your Sword…',    'Every warrior needs a keen blade…'],
+  ['🌟 Casting the Knowledge Spell…','Magic dust swirls around your quest…'],
+  ['🗺️ Charting Your Adventure…',  'The map reveals uncharted territory…'],
+  ['🏰 Raising the Quest Castle…',  'Stone by stone, your challenge takes shape…'],
+  ['🐉 Waking the Question Dragon…','Careful… it breathes fire AND fractions…'],
+];
+
+function buildLoadScreen(){
+  const lh=document.getElementById('loadHeroes');
+  const herSvg = hero==='Alice'
+    ? `<div style="animation:heroFloat 3s ease-in-out infinite">${ALICE_ARMORS[heroArmorIdx.Alice]}</div>`
+    : `<div style="animation:heroFloat 3s ease-in-out infinite">${LEONA_ARMORS[heroArmorIdx.Leona]}</div>`;
+  const avSvg = hero==='Alice'
+    ? `<div style="animation:heroFloat 3.4s ease-in-out infinite reverse">${PINGU_SVG}</div>`
+    : `<div style="animation:heroFloat 3.2s ease-in-out infinite reverse">${EMILY_SVG}</div>`;
+  lh.innerHTML=`
+    <style>@keyframes heroFloat{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-14px) rotate(2deg);}}</style>
+    ${herSvg}
+    ${avSvg}
+  `;
+}
+
+// ══════════════════════════════════════════════════════
+//  AVATAR — floating corner (quest screen)
+// ══════════════════════════════════════════════════════
+const CORRECT_LINES=[
+  "⚔️ Thy sword strikes TRUE, warrior!",
+  "🌟 The spell worked! Dragon slain!",
+  "🏆 GLORY to the mighty scholar!",
+  "✨ The quest gods smile upon thee!",
+  "🛡️ Unbreakable! Unstoppable! YOU!",
+  "🐉 Even dragons bow to your wisdom!",
+  "📜 Your scroll grows ever longer!",
+  "🗺️ New territory conquered!",
+  "⚡ Lightning wisdom strikes again!",
+  "🌈 The realm celebrates your victory!"
+];
+const WRONG_LINES=[
+  "🛡️ The shield holds — try once more!",
+  "⚔️ Even knights miss sometimes. CHARGE!",
+  "🐲 The dragon laughs… but not for long!",
+  "📜 Consult the ancient scrolls again!",
+  "🗺️ Wrong path — rerouting the quest!",
+  "🔮 The crystal ball says: try again!",
+  "🏰 The castle gates hold firm. SIEGE!",
+  "⚡ The spell fizzled. Re-cast it!",
+  "🌟 Stars misaligned. Adjust your aim!",
+  "🐉 The dragon dodged — one more try!"
+];
+const LOCK_LINES=[
+  "🔒 The dungeon door is sealed… study the answer!",
+  "📜 This scroll is locked — memorise it!",
+  "🏰 Drawbridge raised! Note the answer!"
+];
+const IDLE_LINES=[
+  "⚔️ Ready for battle!",
+  "🌟 Channelling quest energy…",
+  "🗺️ Mapping the next challenge…",
+  "🔮 Magic is brewing…",
+  "🐉 Eyes on the dragon!"
+];
+
+let lci=-1,lwi=-1,lki=-1,lii=-1,avIdleTmr;
+function grnd(a,l){let i;do{i=Math.floor(Math.random()*a.length);}while(i===l&&a.length>1);return{t:a[i],i};}
+function setAvBub(t){const b=document.getElementById('avBub');b.style.opacity='0';setTimeout(()=>{b.textContent=t;b.style.opacity='1';},200);}
+function startAvIdle(){
+  clearInterval(avIdleTmr);
+  avIdleTmr=setInterval(()=>{const r=grnd(IDLE_LINES,lii);lii=r.i;setAvBub(r.t);},60000);
+}
+function buildAvatar(){
+  const svg = hero==='Alice' ? PINGU_SVG : EMILY_SVG;
+  document.getElementById('avSvg').innerHTML=svg;
+  const r=grnd(IDLE_LINES,lii);lii=r.i;setAvBub(r.t);
+  startAvIdle();
+}
+const RCA=['rc1','rc2','rc3'],RWA=['rw1','rw2','rw3'];
+let lrca=-1,lrwa=-1;
+function avReact(type){
+  clearInterval(avIdleTmr);
+  const s=document.getElementById('avSvg');
+  [...RCA,...RWA,'rlk'].forEach(c=>s.classList.remove(c));
+  if(type==='correct'){
+    let i;do{i=Math.floor(Math.random()*RCA.length);}while(i===lrca&&RCA.length>1);lrca=i;
+    s.classList.add(RCA[i]);const r=grnd(CORRECT_LINES,lci);lci=r.i;setAvBub(r.t);
+  } else if(type==='wrong'){
+    let i;do{i=Math.floor(Math.random()*RWA.length);}while(i===lrwa&&RWA.length>1);lrwa=i;
+    s.classList.add(RWA[i]);const r=grnd(WRONG_LINES,lwi);lwi=r.i;setAvBub(r.t);
+  } else {
+    s.classList.add('rlk');const r=grnd(LOCK_LINES,lki);lki=r.i;setAvBub(r.t);
+  }
+  setTimeout(()=>{[...RCA,...RWA,'rlk'].forEach(c=>s.classList.remove(c));startAvIdle();},2200);
+}
+
+// ══════════════════════════════════════════════════════
+//  BEGIN QUEST
+// ══════════════════════════════════════════════════════
+async function beginQuest(){
+  buildLoadScreen();
+  show('scLoad');
+
+  const diffDesc={
+    Sprout:  'very easy and introductory — simple, confidence-building questions',
+    Explorer:'standard grade-level practice — typical curriculum questions',
+    Warrior: 'challenging, top of grade level — requires careful multi-step thinking',
+    Legend:  'advanced, beyond grade level, pushing into the next grade'
+  };
+
+  let lmi=0;
+  const ltmr=setInterval(()=>{
+    lmi=(lmi+1)%SPELL_MSGS.length;
+    document.getElementById('loadTitle').textContent=SPELL_MSGS[lmi][0];
+    document.getElementById('loadSub').textContent  =SPELL_MSGS[lmi][1];
+  },2200);
+
+  const gradeLabel = grade==='SK' ? 'Senior Kindergarten (age 5-6)' : `Grade ${grade}`;
+  const ageHint = grade==='SK' ? 5 : grade==='1' ? 6 : grade==='2' ? 7 :
+    grade==='3' ? 8 : grade==='4' ? 9 : grade==='5' ? 10 : grade==='6' ? 11 :
+    grade==='7' ? 12 : grade==='8' ? 13 : grade==='9' ? 14 :
+    grade==='10' ? 15 : grade==='11' ? 16 : 17;
+  const skExtra = grade==='SK' ? `
+SPECIAL SK RULES:
+- Questions must be very simple, oral-style, picture-describable
+- Use simple everyday language a 5-year-old understands
+- Multiple choice ONLY for SK — no fill-in text answers
+- Options should be 1-2 word answers max
+- Frame questions around familiar objects, colours, animals, numbers` : '';
+
+  const prompt=`You are a warm, encouraging Ontario curriculum teacher creating an interactive study quiz.
+
+Generate exactly ${intensityCount} questions for:
+- Student: ${hero}, ${gradeLabel} (age ~${ageHint})
+- Subject: ${CURRICULUM[worldKey].subject}
+- Category: ${category}
+- Topic: ${topic}
+- Difficulty: ${diffDesc[diff]}
+- Quest Intensity: ${intensity} (${intensityCount} questions)
+- Ontario curriculum aligned, Canada
+${skExtra}
+
+RULES:
+1. Return ONLY raw JSON — no markdown, no backticks, no explanation
+2. Mix types: roughly half multiple_choice AND half fill_in (for SK: all multiple_choice)
+3. fill_in answers: SHORT (1-4 words or a number)
+4. multiple_choice: exactly 4 options A B C D, answer is just the letter
+5. Fun and engaging for a ${ageHint}-year-old
+6. Hints guide thinking without revealing the answer
+7. Questions must genuinely match ${gradeLabel} ${CURRICULUM[worldKey].subject} — ${topic}
+8. Vary question formats — don't repeat same question structure
+
+JSON format (return exactly ${intensityCount} questions):
+{
+  "title": "Fun quest title 4-6 words",
+  "questions": [
+    {"id":1,"type":"multiple_choice","question":"?","options":["A) ...","B) ...","C) ...","D) ..."],"answer":"B","hint":"..."},
+    {"id":2,"type":"fill_in","question":"?","answer":"short answer","hint":"..."}
+  ]
+}`;
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':API_KEY,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-haiku-4-5-20251001',
+        max_tokens: intensityCount <= 5 ? 1400 : intensityCount <= 8 ? 2200 : 3200,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    clearInterval(ltmr);
+    if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'API error '+res.status);}
+    const data=await res.json();
+    let txt=data.content.map(c=>c.text||'').join('').trim();
+    txt=txt.replace(/^```json\s*/,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
+    const parsed=JSON.parse(txt);
+    rawData=parsed;
+    buildQuest(parsed);
+  }catch(err){
+    clearInterval(ltmr);
+    show('scSelect');
+    alert('⚠️ Quest failed!\n\n'+err.message+'\n\nCheck your API key and try again.');
+  }
+}
+
+// ══════════════════════════════════════════════════════
+//  BUILD QUEST SCREEN
+// ══════════════════════════════════════════════════════
+function buildQuest(data){
+  questions=data.questions;
+  attempts={}; hinted={}; mcSel={};
+  questions.forEach((_,i)=>{attempts[i]=0;hinted[i]=false;});
+  T0=Date.now();
+
+  const dIco={Sprout:'🌱',Explorer:'🗺️',Warrior:'⚔️',Legend:'👑'};
+  const iIco={Scout:'🗺️',Battle:'⚔️',Conquer:'👑'};
+  const gradeLabel = grade==='SK'?'SK':`Gr ${grade}`;
+  document.getElementById('qTitle').innerHTML=`<em>${data.title}</em>`;
+  document.getElementById('qPills').innerHTML=`
+    <span class="qpill">${hero==='Alice'?'🎻':'🐘'} ${hero}</span>
+    <span class="qpill">📚 ${gradeLabel}</span>
+    <span class="qpill">${CURRICULUM[worldKey].icon} ${CURRICULUM[worldKey].name}</span>
+    <span class="qpill">📌 ${topic}</span>
+    <span class="qpill">${dIco[diff]} ${diff}</span>
+    <span class="qpill">${iIco[intensity]} ${intensity} · ${intensityCount}q</span>
+  `;
+
+  const b=document.getElementById('bdg');b.className='badge';b.innerHTML='';
+
+  const body=document.getElementById('qBody');
+  body.innerHTML='';
+  questions.forEach((q,i)=>body.appendChild(makeCard(q,i)));
+
+  buildAvatar();
+  show('scQuest');
+}
+
+function makeCard(q,i){
+  const card=document.createElement('div');
+  card.className='qcard';card.id='qc'+i;
+  let ansHtml='';
+  if(q.type==='multiple_choice'){
+    const letters=['A','B','C','D'];
+    ansHtml=`<div class="mc-opts" id="mco${i}">`+
+      (q.options||[]).map((opt,oi)=>`
+        <div class="mc-opt" id="mc${i}_${oi}" onclick="pickMC(${i},${oi},'${letters[oi]}')">
+          <span class="mc-ltr">${letters[oi]}</span>
+          <span>${opt.replace(/^[A-D]\)\s*/,'')}</span>
+        </div>`).join('')+'</div>';
+  } else {
+    ansHtml=`<div class="ans-row"><span class="ans-lbl">Answer:</span>
+      <input class="ans-inp" id="inp${i}" type="text" placeholder="Type here…"
+        autocomplete="off" autocorrect="off" spellcheck="false"
+        onkeydown="if(event.key==='Enter')checkQ(${i})"/></div>`;
+  }
+  card.innerHTML=`
+    <div class="qcard-head">
+      <div class="qnum">${i+1}</div>
+      <div class="qtext" id="qtxt${i}">${q.question}</div>
+    </div>
+    ${ansHtml}
+    <div class="btn-row">
+      <button class="chk-btn"  id="cb${i}" onclick="checkQ(${i})">Check ✓</button>
+      <button class="hint-btn" id="hb${i}" onclick="showHint(${i})">💡 Hint</button>
+    </div>
+    <div class="hint-bub" id="hbub${i}">${q.hint}</div>
+    <div class="qfb"      id="fb${i}"></div>
+  `;
+  return card;
+}
+
+// ══════════════════════════════════════════════════════
+//  MC / HINT / CHECK
+// ══════════════════════════════════════════════════════
+function pickMC(qi,oi,letter){
+  if(document.getElementById('cb'+qi).disabled)return;
+  (questions[qi].options||[]).forEach((_,j)=>{
+    const el=document.getElementById(`mc${qi}_${j}`);
+    if(el)el.classList.remove('selected','no');
+  });
+  document.getElementById(`mc${qi}_${oi}`).classList.add('selected');
+  mcSel[qi]=letter;
+}
+function showHint(i){
+  document.getElementById('hbub'+i).classList.add('show');
+  document.getElementById('hb'+i).classList.add('used');
+  hinted[i]=true;
+  const qt=document.getElementById('qtxt'+i);
+  if(!qt.querySelector('.hint-tag')){
+    const t=document.createElement('span');t.className='hint-tag';t.textContent='💡 hint used';qt.appendChild(t);
+  }
+}
+function checkQ(i){
+  const q=questions[i];
+  const fb=document.getElementById('fb'+i);
+  const btn=document.getElementById('cb'+i);
+  if(btn.disabled)return;
+  let given='';
+  if(q.type==='multiple_choice'){
+    given=mcSel[i]||'';
+    if(!given){fb.textContent='⚠️ Pick an option first!';fb.className='qfb warn';return;}
+  } else {
+    const inp=document.getElementById('inp'+i);
+    given=inp.value.trim();
+    if(!given){fb.textContent='⚠️ Type your answer first!';fb.className='qfb warn';return;}
+  }
+  const isOk=given.trim().toLowerCase()===String(q.answer).trim().toLowerCase();
+  if(isOk){
+    fb.innerHTML='✅ Correct!'+(hinted[i]?' <span class="hint-tag">💡 50% credit</span>':'');
+    fb.className='qfb ok';
+    lockCard(i,true);
+    avReact('correct');
+  } else {
+    attempts[i]++;
+    if(attempts[i]>=2){
+      fb.innerHTML='🔒 Locked! Correct answer: <strong>'+q.answer+'</strong>';
+      fb.className='qfb lock';
+      lockCard(i,false,given);
+      avReact('lock');
+    } else {
+      fb.textContent='❌ Not quite — One more try! ⚠️';
+      fb.className='qfb warn';
+      avReact('wrong');
+      if(q.type==='multiple_choice'){
+        const oi=['A','B','C','D'].indexOf(mcSel[i]);
+        const el=document.getElementById(`mc${i}_${oi}`);
+        if(el){el.classList.add('no');setTimeout(()=>{el.classList.remove('no','selected');mcSel[i]='';},700);}
+      } else {
+        const inp=document.getElementById('inp'+i);
+        inp.classList.add('no');setTimeout(()=>{inp.classList.remove('no');inp.value='';},700);
+      }
+    }
+  }
+}
+function lockCard(i,isOk,wrongAnswer){
+  document.getElementById('cb'+i).disabled=true;
+  document.getElementById('hb'+i).classList.add('used');
+  const q=questions[i];
+  if(q.type==='multiple_choice'){
+    const letters=['A','B','C','D'];
+    (q.options||[]).forEach((_,oi)=>{
+      const el=document.getElementById(`mc${i}_${oi}`);
+      if(!el)return;
+      el.style.pointerEvents='none';
+      el.classList.remove('selected','no');
+      if(letters[oi]===q.answer)el.classList.add('ok');
+      else if(!isOk&&letters[oi]===(wrongAnswer||mcSel[i]))el.classList.add('no');
+    });
+  } else {
+    const inp=document.getElementById('inp'+i);
+    inp.disabled=true;inp.classList.remove('no');
+    if(isOk)inp.classList.add('ok');
+  }
+}
+
+// ══════════════════════════════════════════════════════
+//  FINAL / BADGE / FINALE
+// ══════════════════════════════════════════════════════
+function finalCheck(){
+  let earned=0,total=questions.length;
+  questions.forEach((_,i)=>{
+    const fb=document.getElementById('fb'+i);
+    if(fb&&fb.classList.contains('ok'))earned+=(hinted[i]?.5:1);
+  });
+  const pct=(earned/total)*100;
+  stampBadge(pct);
+  setTimeout(()=>showFinale(pct,earned,total),860);
+}
+function stampBadge(pct){
+  const b=document.getElementById('bdg');b.className='badge';
+  let icon,label,cls;
+  if(pct===100)   {icon='🏆';label='PLATINUM';cls='b-plat';}
+  else if(pct>=85){icon='🥇';label='GOLD';    cls='b-gold';}
+  else if(pct>=70){icon='🥈';label='SILVER';  cls='b-silv';}
+  else            {icon='🥉';label='BRONZE';  cls='b-brnz';}
+  b.innerHTML=`<i>${icon}</i>${label}`;
+  b.classList.add(cls);
+  requestAnimationFrame(()=>b.classList.add('show'));
+}
+function elapsed(){const s=Math.floor((Date.now()-T0)/1000);return`⏱️ Time: ${Math.floor(s/60)} min ${s%60} sec`;}
+const COMEBACKS=[
+  "⚔️ The quest resists you — but heroes NEVER quit!",
+  "🐉 The dragon breathes fire… sharpen your sword and retry!",
+  "📜 The ancient scroll demands another reading!",
+  "🏰 The castle gates hold — but not for long!",
+  "🌟 Even legends need a second attempt. CHARGE!",
+];
+function showFinale(pct,earned,total){
+  const ov=document.getElementById('finOv');
+  ov.classList.add('show');
+  if(pct>=85){
+    document.getElementById('finSuc').classList.add('show');
+    document.getElementById('finScore').textContent=`🎯 ${Math.round(pct)}% — ${earned}/${total} points`;
+    document.getElementById('finTime').textContent=elapsed();
+    spawnConfetti();
+  } else {
+    document.getElementById('finCmb').classList.add('show');
+    document.getElementById('cmbTtl').textContent=pct>=50?'⚔️ Almost there!':'🐉 The quest fights back!';
+    document.getElementById('cmbMsg').textContent=COMEBACKS[Math.floor(Math.random()*COMEBACKS.length)];
+    document.getElementById('cmbTime').textContent=elapsed();
+  }
+}
+function spawnConfetti(){
+  const ov=document.getElementById('finOv');
+  const cols=['#F5A623','#FF4F9A','#9B59E8','#0ABFBC','#27AE60','#E67E22'];
+  for(let i=0;i<65;i++){
+    const p=document.createElement('div');p.className='cfp';
+    p.style.left=Math.random()*100+'vw';
+    p.style.background=cols[Math.floor(Math.random()*cols.length)];
+    p.style.width=(7+Math.random()*9)+'px';p.style.height=(7+Math.random()*9)+'px';
+    p.style.animationDuration=(2+Math.random()*3)+'s';
+    p.style.animationDelay=(Math.random()*2)+'s';
+    p.style.borderRadius=Math.random()>.5?'50%':'2px';
+    ov.appendChild(p);
+  }
+}
+function retryQuest(){closeFinale();if(rawData)buildQuest(rawData);}
+function goSelector(){
+  closeFinale();
+  const b=document.getElementById('bdg');
+  b.classList.remove('show');setTimeout(()=>{b.className='badge';b.innerHTML='';},500);
+  hero='';grade='';worldKey='';category='';topic='';diff='';intensity='';intensityCount=5;
+  document.querySelectorAll('.hero-girl-wrap').forEach(b=>b.classList.remove('sel'));
+  document.querySelectorAll('.intensity-btn,.grade-btn,.world-btn,.cat-btn,.topic-btn,.diff-btn').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('catSection').style.display='none';
+  document.getElementById('topicSection').style.display='none';
+  document.getElementById('topicDivider').style.display='none';
+  document.getElementById('diffSection').style.display='none';
+  document.getElementById('beginBtn').disabled=true;
+  // new random armors
+  heroArmorIdx.Alice=Math.floor(Math.random()*4);
+  heroArmorIdx.Leona=Math.floor(Math.random()*4);
+  document.getElementById('hgSvgAlice').innerHTML=ALICE_ARMORS[heroArmorIdx.Alice];
+  document.getElementById('hgSvgLeona').innerHTML=LEONA_ARMORS[heroArmorIdx.Leona];
+  show('scSelect');
+}
+function closeFinale(){
+  document.getElementById('finOv').classList.remove('show');
+  document.getElementById('finSuc').classList.remove('show');
+  document.getElementById('finCmb').classList.remove('show');
+  document.querySelectorAll('.cfp').forEach(p=>p.remove());
+}
+</script>
+</body>
+</html>
