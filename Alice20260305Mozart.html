@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alice's Geometry Challenge</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teal:   #0ABFBC;
+  --coral:  #FC5185;
+  --yellow: #F8D347;
+  --navy:   #1A1A40;
+  --lav:    #A78BFA;
+  --mint:   #6EE7B7;
+  --orange: #FB923C;
+  --blue:   #60A5FA;
+  --bg:     #F0FAFA;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+  font-family:'Quicksand',sans-serif;
+  background:var(--bg);
+  min-height:100vh;
+  padding:0 0 100px;
+  background-image:
+    radial-gradient(ellipse at 0% 0%,rgba(10,191,188,0.13) 0%,transparent 55%),
+    radial-gradient(ellipse at 100% 100%,rgba(252,81,133,0.12) 0%,transparent 55%);
+}
+.page{max-width:780px;margin:0 auto;padding:0 20px;}
+
+/* ── HEADER ── */
+.header{
+  background:linear-gradient(135deg,#1A1A40 0%,#2d2b6b 50%,#1A1A40 100%);
+  padding:30px 28px 24px;
+  position:relative; overflow:hidden;
+  margin-bottom:28px;
+}
+.header::before{
+  content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M20 20 L22 14 L18 14 Z'/%3E%3C/g%3E%3C/svg%3E");
+}
+.header-inner{position:relative;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.header-text h1{font-family:'Baloo 2',cursive;font-size:2rem;font-weight:800;color:white;line-height:1.1;}
+.header-text h1 span{color:var(--yellow);}
+.header-text .sub{color:rgba(255,255,255,0.7);font-size:0.88rem;font-weight:600;margin-top:3px;}
+.date-pill{
+  background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.25);
+  border-radius:50px;padding:6px 16px;
+  font-family:'Baloo 2',cursive;font-size:0.82rem;color:rgba(255,255,255,0.85);
+  font-weight:700;white-space:nowrap;
+}
+
+/* ── BADGE SLOT ── */
+.badge-slot{
+  position:absolute;top:16px;right:20px;
+  width:80px;height:80px;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
+}
+.badge-stamp{
+  display:none;
+  width:80px;height:80px;
+  border-radius:50%;
+  font-family:'Baloo 2',cursive;
+  font-size:0.65rem;font-weight:800;
+  color:white;text-align:center;
+  flex-direction:column;align-items:center;justify-content:center;
+  border:3px solid rgba(255,255,255,0.4);
+  box-shadow:0 0 20px rgba(0,0,0,0.3);
+  transform:scale(0) rotate(-15deg);
+  transition:transform 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
+  line-height:1.2;
+}
+.badge-stamp.show{display:flex;transform:scale(1) rotate(-8deg);}
+.badge-stamp .badge-icon{font-size:1.6rem;display:block;}
+.badge-plat{background:linear-gradient(135deg,#e8e8e8,#a8a8a8);animation:platSparkle 2s ease-in-out infinite;}
+.badge-gold{background:linear-gradient(135deg,#F8D347,#e6a817);animation:goldGlow 2s ease-in-out infinite;}
+.badge-silv{background:linear-gradient(135deg,#c0c0c0,#888);}
+.badge-brnz{background:linear-gradient(135deg,#cd7f32,#a0522d);}
+@keyframes platSparkle{0%,100%{box-shadow:0 0 20px rgba(255,255,255,0.8),0 0 40px rgba(255,255,255,0.4);}50%{box-shadow:0 0 30px rgba(255,255,255,1),0 0 60px rgba(255,255,255,0.6);}}
+@keyframes goldGlow{0%,100%{box-shadow:0 0 15px rgba(248,211,71,0.6);}50%{box-shadow:0 0 30px rgba(248,211,71,1);}}
+
+/* ── FORMULA BAR ── */
+.formula-bar{
+  background:var(--navy);border-radius:14px;
+  padding:14px 20px;margin-bottom:24px;
+  display:flex;gap:12px;flex-wrap:wrap;justify-content:center;
+}
+.fi{
+  color:white;font-size:0.82rem;font-weight:600;text-align:center;
+  background:rgba(255,255,255,0.08);border-radius:8px;padding:6px 12px;
+  border:1px solid rgba(255,255,255,0.12);
+}
+.fi .fn{font-family:'Baloo 2',cursive;color:var(--yellow);font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:2px;}
+
+/* ── QUESTION CARD ── */
+.qcard{
+  background:white;border-radius:20px;padding:24px 26px;
+  margin-bottom:22px;
+  box-shadow:0 4px 24px rgba(0,0,0,0.07);
+  border-left:5px solid var(--teal);
+  animation:slideUp 0.5s ease both;
+}
+.qcard:nth-child(2){border-left-color:var(--coral);animation-delay:0.1s;}
+.qcard:nth-child(3){border-left-color:var(--lav);animation-delay:0.2s;}
+.qcard:nth-child(4){border-left-color:var(--orange);animation-delay:0.3s;}
+.qcard:nth-child(5){border-left-color:var(--blue);animation-delay:0.4s;}
+.qcard:nth-child(6){border-left-color:var(--mint);animation-delay:0.5s;}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+.qhead{display:flex;align-items:flex-start;gap:12px;margin-bottom:18px;}
+.qnum{
+  width:38px;height:38px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;
+  color:white;flex-shrink:0;margin-top:2px;
+}
+.qcard:nth-child(1) .qnum{background:var(--teal);}
+.qcard:nth-child(2) .qnum{background:var(--coral);}
+.qcard:nth-child(3) .qnum{background:var(--lav);}
+.qcard:nth-child(4) .qnum{background:var(--orange);}
+.qcard:nth-child(5) .qnum{background:var(--blue);}
+.qcard:nth-child(6) .qnum{background:var(--mint);color:var(--navy);}
+
+.qtitle{font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:700;color:var(--navy);line-height:1.4;}
+.qbody{display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap;}
+.diag{flex:0 0 auto;background:#f8faff;border-radius:14px;padding:12px;border:2px dashed #e5e7eb;}
+.info{flex:1;min-width:180px;}
+.info-lbl{font-size:0.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#9ca3af;margin-bottom:7px;}
+.dims{list-style:none;display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
+.dims li{background:#f3f4f6;border-radius:7px;padding:6px 11px;font-size:0.9rem;font-weight:600;color:var(--navy);display:flex;align-items:center;gap:7px;}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.hint-box{background:#fffbeb;border:1.5px solid #fde68a;border-radius:9px;padding:9px 12px;font-size:0.84rem;font-weight:600;color:#92400e;line-height:1.5;}
+.ans-row{margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.ans-lbl{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;color:var(--navy);}
+.ans-input{
+  width:110px;height:40px;border:2.5px solid #e5e7eb;border-radius:10px;
+  background:#f9fafb;font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:700;
+  color:var(--navy);text-align:center;outline:none;transition:border-color 0.2s,background 0.2s;
+}
+.ans-input:focus{border-color:var(--teal);background:white;}
+.ans-input.correct{border-color:var(--mint);background:#f0fdf4;color:#059669;}
+.ans-input.wrong{border-color:var(--coral);background:#fff1f2;color:var(--coral);}
+.unit{font-weight:700;color:#6b7280;font-size:0.9rem;}
+.check-mini{
+  padding:9px 20px;border-radius:50px;border:none;
+  font-family:'Baloo 2',cursive;font-size:0.92rem;font-weight:700;
+  color:white;cursor:pointer;
+  box-shadow:0 3px 0 rgba(0,0,0,0.15);
+  transition:transform 0.1s,box-shadow 0.1s;
+}
+.check-mini:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,0.1);}
+.qcard:nth-child(1) .check-mini{background:var(--teal);}
+.qcard:nth-child(2) .check-mini{background:var(--coral);}
+.qcard:nth-child(3) .check-mini{background:var(--lav);}
+.qcard:nth-child(4) .check-mini{background:var(--orange);}
+.qcard:nth-child(5) .check-mini{background:var(--blue);}
+.qcard:nth-child(6) .check-mini{background:var(--mint);color:var(--navy);}
+.qfeedback{font-size:0.88rem;font-weight:700;margin-top:7px;min-height:18px;}
+.qfeedback.ok{color:#059669;}
+.qfeedback.err{color:var(--coral);}
+.dim-text{font-family:'Quicksand',sans-serif;font-weight:700;font-size:11px;fill:#374151;}
+
+/* ── FINAL CHECK BUTTON ── */
+.final-btn-wrap{text-align:center;margin:30px 0 10px;}
+.final-btn{
+  font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;
+  background:linear-gradient(135deg,var(--teal),var(--lav));
+  color:white;border:none;border-radius:50px;
+  padding:14px 44px;cursor:pointer;
+  box-shadow:0 5px 0 rgba(0,0,0,0.2);
+  transition:transform 0.1s,box-shadow 0.1s;
+  letter-spacing:0.5px;
+}
+.final-btn:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,0.15);}
+
+/* ════════════════════════════════
+   MOZART AVATAR
+════════════════════════════════ */
+.avatar-wrap{
+  position:fixed;bottom:20px;right:16px;
+  z-index:300;cursor:default;user-select:none;
+  filter:drop-shadow(3px 6px 10px rgba(0,0,0,0.15));
+}
+.avatar-svg-wrap{
+  animation:avatarIdle 3s ease-in-out infinite;
+  transform-origin:bottom center;
+}
+@keyframes avatarIdle{
+  0%,100%{transform:translateY(0) rotate(-1deg);}
+  50%{transform:translateY(-8px) rotate(1deg);}
+}
+
+/* reaction animations */
+.avatar-svg-wrap.react-correct1{animation:correctBounce 0.5s ease 4 forwards;}
+.avatar-svg-wrap.react-correct2{animation:correctSpin 0.6s ease 3 forwards;}
+.avatar-svg-wrap.react-correct3{animation:correctShimmy 0.3s ease 6 forwards;}
+.avatar-svg-wrap.react-wrong1{animation:wrongShake 0.3s ease 5 forwards;}
+.avatar-svg-wrap.react-wrong2{animation:wrongWobble 0.4s ease 4 forwards;}
+.avatar-svg-wrap.react-wrong3{animation:wrongShrink 0.5s ease 3 forwards;}
+
+@keyframes correctBounce{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-22px) scale(1.1);}}
+@keyframes correctSpin{0%{transform:rotate(0) scale(1);}50%{transform:rotate(180deg) scale(1.15);}100%{transform:rotate(360deg) scale(1);}}
+@keyframes correctShimmy{0%,100%{transform:translateX(0) rotate(-1deg);}25%{transform:translateX(-12px) rotate(-8deg);}75%{transform:translateX(12px) rotate(8deg);}}
+@keyframes wrongShake{0%,100%{transform:translateX(0);}25%{transform:translateX(-10px);}75%{transform:translateX(10px);}}
+@keyframes wrongWobble{0%,100%{transform:rotate(0);}25%{transform:rotate(-12deg);}75%{transform:rotate(12deg);}}
+@keyframes wrongShrink{0%,100%{transform:scale(1);}50%{transform:scale(0.75) translateY(10px);}}
+
+.speech-bubble{
+  position:absolute;bottom:175px;right:8px;
+  background:white;
+  border:2.5px solid var(--lav);
+  border-radius:14px 14px 4px 14px;
+  padding:7px 12px;
+  font-family:'Baloo 2',cursive;font-size:0.75rem;
+  color:var(--navy);white-space:nowrap;
+  box-shadow:2px 2px 0 var(--lav);
+  max-width:200px;white-space:normal;
+  line-height:1.4;text-align:center;
+  transition:opacity 0.3s;
+}
+
+/* ════════════════════════════════
+   FINALE OVERLAY
+════════════════════════════════ */
+.finale-overlay{
+  display:none;
+  position:fixed;inset:0;
+  z-index:1000;
+  background:rgba(10,10,30,0.88);
+  backdrop-filter:blur(6px);
+  align-items:center;justify-content:center;
+  flex-direction:column;
+}
+.finale-overlay.show{display:flex;}
+
+/* confetti */
+.confetti-piece{
+  position:absolute;top:-20px;
+  width:10px;height:10px;
+  border-radius:2px;
+  animation:confettiFall linear infinite;
+}
+@keyframes confettiFall{
+  0%{transform:translateY(0) rotate(0deg);opacity:1;}
+  100%{transform:translateY(110vh) rotate(720deg);opacity:0;}
+}
+
+/* success */
+.finale-success{display:none;flex-direction:column;align-items:center;gap:16px;}
+.finale-success.show{display:flex;}
+.you-did-it{
+  font-family:'Baloo 2',cursive;font-size:3.5rem;font-weight:800;
+  background:linear-gradient(135deg,#F8D347,#FC5185,#A78BFA);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:bannerPop 0.6s cubic-bezier(0.175,0.885,0.32,1.275) both;
+  text-align:center;line-height:1.1;
+}
+@keyframes bannerPop{from{transform:scale(0) rotate(-5deg);opacity:0;}to{transform:scale(1) rotate(0);opacity:1;}}
+
+/* orchestra scene */
+.orch-wrap{
+  width:340px;height:200px;position:relative;
+  animation:orchEntry 0.8s cubic-bezier(0.175,0.885,0.32,1.275) 0.3s both;
+}
+@keyframes orchEntry{from{transform:scale(0.3) translateY(60px);opacity:0;}to{transform:scale(1) translateY(0);opacity:1;}}
+
+/* notes flying */
+.note{
+  position:absolute;font-size:1.8rem;
+  animation:noteFloat 2s ease-in-out infinite;
+  opacity:0.9;
+}
+@keyframes noteFloat{
+  0%,100%{transform:translateY(0) rotate(-10deg);opacity:0.7;}
+  50%{transform:translateY(-25px) rotate(10deg);opacity:1;}
+}
+
+/* comeback */
+.finale-comeback{display:none;flex-direction:column;align-items:center;gap:16px;}
+.finale-comeback.show{display:flex;}
+.comeback-title{
+  font-family:'Baloo 2',cursive;font-size:2.2rem;font-weight:800;
+  color:var(--yellow);text-align:center;line-height:1.2;
+}
+.comeback-msg{
+  font-family:'Baloo 2',cursive;font-size:1.1rem;color:white;
+  text-align:center;max-width:360px;line-height:1.5;
+}
+.retry-btn{
+  font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;
+  background:linear-gradient(135deg,var(--yellow),var(--orange));
+  color:var(--navy);border:none;border-radius:50px;
+  padding:14px 40px;cursor:pointer;
+  box-shadow:0 5px 0 rgba(0,0,0,0.25);
+  transition:transform 0.1s,box-shadow 0.1s;
+  animation:retryPulse 2s ease-in-out infinite;
+}
+@keyframes retryPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.04);}}
+.retry-btn:active{transform:scale(0.97) translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,0.15);}
+
+/* large avatar in finale */
+.finale-avatar{
+  animation:avatarGrow 0.7s cubic-bezier(0.175,0.885,0.32,1.275) 0.2s both;
+}
+@keyframes avatarGrow{from{transform:scale(0.2) translateY(80px);opacity:0;}to{transform:scale(1) translateY(0);opacity:1;}}
+
+/* ── success score ── */
+.score-reveal{
+  font-family:'Baloo 2',cursive;font-size:1.3rem;color:white;
+  text-align:center;opacity:0;
+  animation:fadeIn 0.5s ease 1.2s forwards;
+}
+@keyframes fadeIn{to{opacity:1;}}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════
+     MOZART AVATAR (wearing cool shades, playing electric drums)
+════════════════════════════════ -->
+<div class="avatar-wrap" id="avatarWrap">
+  <div class="speech-bubble" id="speechBubble">🎵 Let's show geometry who's boss!</div>
+  <div class="avatar-svg-wrap" id="avatarSvg">
+    <svg width="108" height="155" viewBox="0 0 108 155" xmlns="http://www.w3.org/2000/svg">
+      <!-- DRUM KIT (Mozart's unexpected situation: electric drum kit) -->
+      <!-- bass drum -->
+      <ellipse cx="54" cy="148" rx="38" ry="10" fill="#2d2b6b"/>
+      <ellipse cx="54" cy="138" rx="38" ry="10" fill="#3d3b8b" stroke="#A78BFA" stroke-width="1.5"/>
+      <rect x="16" y="130" width="76" height="12" rx="4" fill="#3d3b8b" stroke="#A78BFA" stroke-width="1.5"/>
+      <!-- hi-hat left -->
+      <ellipse cx="14" cy="108" rx="12" ry="3" fill="#F8D347" stroke="#e6a817" stroke-width="1.5"/>
+      <ellipse cx="14" cy="105" rx="12" ry="3" fill="#F8D347" stroke="#e6a817" stroke-width="1.5"/>
+      <line x1="14" y1="105" x2="14" y2="130" stroke="#9ca3af" stroke-width="2"/>
+      <!-- cymbal right -->
+      <ellipse cx="94" cy="102" rx="14" ry="3.5" fill="#F8D347" stroke="#e6a817" stroke-width="1.5"/>
+      <line x1="94" y1="105" x2="90" y2="130" stroke="#9ca3af" stroke-width="2"/>
+      <!-- drum sticks (held in hands) -->
+      <line x1="22" y1="95" x2="14" y2="106" stroke="#c4a35a" stroke-width="3" stroke-linecap="round"/>
+      <line x1="82" y1="88" x2="93" y2="102" stroke="#c4a35a" stroke-width="3" stroke-linecap="round"/>
+
+      <!-- BODY -->
+      <ellipse cx="54" cy="112" rx="26" ry="20" fill="#7C3AED"/>
+      <!-- fancy coat -->
+      <path d="M28 105 Q54 118 80 105 L80 128 Q54 135 28 128 Z" fill="#6D28D9"/>
+      <!-- white cravat -->
+      <ellipse cx="54" cy="100" rx="8" ry="5" fill="white"/>
+      <path d="M50 100 L54 110 L58 100" fill="white"/>
+
+      <!-- ARMS holding sticks -->
+      <path d="M28 108 Q18 102 22 95" stroke="#7C3AED" stroke-width="10" fill="none" stroke-linecap="round"/>
+      <path d="M80 108 Q88 98 82 88" stroke="#7C3AED" stroke-width="10" fill="none" stroke-linecap="round"/>
+
+      <!-- HEAD -->
+      <ellipse cx="54" cy="72" rx="26" ry="24" fill="#FDDCB5"/>
+
+      <!-- POWDERED WIG -->
+      <ellipse cx="54" cy="56" rx="28" ry="18" fill="#f0ece4"/>
+      <!-- wig curls left -->
+      <ellipse cx="28" cy="70" rx="8" ry="16" fill="#f0ece4"/>
+      <ellipse cx="26" cy="72" rx="5" ry="12" fill="#e8e0d4"/>
+      <!-- wig curls right -->
+      <ellipse cx="80" cy="70" rx="8" ry="16" fill="#f0ece4"/>
+      <ellipse cx="82" cy="72" rx="5" ry="12" fill="#e8e0d4"/>
+      <!-- wig ribbon -->
+      <rect x="44" y="86" width="20" height="5" rx="2" fill="#FC5185"/>
+
+      <!-- COOL SHADES 😎 -->
+      <rect x="34" y="68" width="14" height="9" rx="4" fill="#1a1a1a"/>
+      <rect x="60" y="68" width="14" height="9" rx="4" fill="#1a1a1a"/>
+      <line x1="48" y1="72" x2="60" y2="72" stroke="#555" stroke-width="2"/>
+      <line x1="34" y1="72" x2="28" y2="74" stroke="#555" stroke-width="2"/>
+      <line x1="74" y1="72" x2="80" y2="74" stroke="#555" stroke-width="2"/>
+      <!-- lens shine -->
+      <circle cx="39" cy="70" r="2" fill="rgba(255,255,255,0.3)"/>
+      <circle cx="65" cy="70" r="2" fill="rgba(255,255,255,0.3)"/>
+
+      <!-- NOSE -->
+      <ellipse cx="54" cy="78" rx="4" ry="3" fill="#f0c090"/>
+      <!-- SMIRK mouth -->
+      <path d="M48 84 Q56 90 62 84" stroke="#c97040" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+      <!-- ROSY CHEEKS -->
+      <ellipse cx="38" cy="80" rx="6" ry="4" fill="#FFB3C6" opacity="0.5"/>
+      <ellipse cx="70" cy="80" rx="6" ry="4" fill="#FFB3C6" opacity="0.5"/>
+
+      <!-- lightning bolt on drum (rock accent) -->
+      <text x="44" y="142" font-size="12" fill="var(--yellow)">⚡</text>
+    </svg>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     FINALE OVERLAY
+════════════════════════════════ -->
+<div class="finale-overlay" id="finaleOverlay">
+
+  <!-- SUCCESS -->
+  <div class="finale-success" id="finaleSuccess">
+    <div class="you-did-it">🎉 YOU DID IT! 🎉</div>
+    <div class="score-reveal" id="scoreReveal"></div>
+
+    <!-- Orchestra scene -->
+    <div class="orch-wrap">
+      <svg width="340" height="200" viewBox="0 0 340 200" xmlns="http://www.w3.org/2000/svg">
+        <!-- stage floor -->
+        <rect x="0" y="170" width="340" height="30" fill="#2d1a0e" rx="4"/>
+        <rect x="0" y="165" width="340" height="8" fill="#8B4513" rx="2"/>
+
+        <!-- CONDUCTOR (Mozart larger, waving baton) -->
+        <g transform="translate(155,60)" style="animation:conductorWave 0.8s ease-in-out infinite alternate">
+          <ellipse cx="15" cy="50" rx="12" ry="16" fill="#6D28D9"/>
+          <ellipse cx="15" cy="28" rx="11" ry="10" fill="#FDDCB5"/>
+          <ellipse cx="15" cy="20" rx="12" ry="8" fill="#f0ece4"/>
+          <!-- baton arm -->
+          <line x1="27" y1="42" x2="48" y2="18" stroke="#FDDCB5" stroke-width="4" stroke-linecap="round"/>
+          <line x1="48" y1="18" x2="58" y2="5" stroke="#c4a35a" stroke-width="2" stroke-linecap="round"/>
+          <!-- shades -->
+          <rect x="8" y="25" width="6" height="4" rx="2" fill="#1a1a1a"/>
+          <rect x="17" y="25" width="6" height="4" rx="2" fill="#1a1a1a"/>
+          <line x1="14" y1="27" x2="17" y2="27" stroke="#555" stroke-width="1.5"/>
+        </g>
+        <style>
+          @keyframes conductorWave{from{transform:translate(155px,60px) rotate(-8deg);}to{transform:translate(155px,60px) rotate(8deg);}}
+        </style>
+
+        <!-- VIOLIN PLAYER left -->
+        <g style="animation:playerBob 1.2s ease-in-out infinite alternate">
+          <ellipse cx="60" cy="130" rx="11" ry="15" fill="#FC5185"/>
+          <ellipse cx="60" cy="108" rx="10" ry="9" fill="#FDDCB5"/>
+          <ellipse cx="60" cy="100" rx="11" ry="7" fill="#f0ece4"/>
+          <line x1="60" y1="117" x2="80" y2="125" stroke="#FDDCB5" stroke-width="4" stroke-linecap="round"/>
+          <!-- violin shape -->
+          <ellipse cx="85" cy="126" rx="7" ry="10" fill="#8B4513" transform="rotate(-20 85 126)"/>
+          <line x1="82" y1="118" x2="90" y2="140" stroke="#c4a35a" stroke-width="1.5"/>
+        </g>
+        <style>@keyframes playerBob{from{transform:translateY(0);}to{transform:translateY(-6px);}}</style>
+
+        <!-- CELLO PLAYER right -->
+        <g style="animation:playerBob2 1s ease-in-out infinite alternate">
+          <ellipse cx="260" cy="132" rx="11" ry="15" fill="#0ABFBC"/>
+          <ellipse cx="260" cy="110" rx="10" ry="9" fill="#FDDCB5"/>
+          <ellipse cx="260" cy="102" rx="11" ry="7" fill="#f0ece4"/>
+          <ellipse cx="245" cy="138" rx="9" ry="14" fill="#8B4513" transform="rotate(10 245 138)"/>
+          <line x1="244" y1="126" x2="248" y2="152" stroke="#c4a35a" stroke-width="1.5"/>
+          <line x1="260" y1="119" x2="244" y2="130" stroke="#FDDCB5" stroke-width="4" stroke-linecap="round"/>
+        </g>
+        <style>@keyframes playerBob2{from{transform:translateY(-4px);}to{transform:translateY(4px);}}</style>
+
+        <!-- TRUMPET PLAYER far left -->
+        <g style="animation:trumpetBob 1.4s ease-in-out infinite alternate">
+          <ellipse cx="25" cy="135" rx="10" ry="13" fill="#F8D347"/>
+          <ellipse cx="25" cy="116" rx="9" ry="8" fill="#FDDCB5"/>
+          <ellipse cx="25" cy="109" rx="10" ry="6" fill="#f0ece4"/>
+          <path d="M25 124 Q40 118 52 122 Q58 122 60 118" stroke="#F8D347" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <ellipse cx="60" cy="117" rx="5" ry="5" fill="#F8D347" opacity="0.6"/>
+        </g>
+        <style>@keyframes trumpetBob{from{transform:translateY(0) rotate(-2deg);}to{transform:translateY(-5px) rotate(2deg);}}</style>
+
+        <!-- PIANO far right -->
+        <g>
+          <rect x="285" y="110" width="50" height="30" rx="4" fill="#1a1a40"/>
+          <rect x="285" y="108" width="50" height="6" rx="2" fill="#2d2b6b"/>
+          <!-- keys -->
+          <rect x="288" y="114" width="5" height="18" rx="1" fill="white"/>
+          <rect x="295" y="114" width="5" height="18" rx="1" fill="white"/>
+          <rect x="302" y="114" width="5" height="18" rx="1" fill="white"/>
+          <rect x="309" y="114" width="5" height="18" rx="1" fill="white"/>
+          <rect x="316" y="114" width="5" height="18" rx="1" fill="white"/>
+          <rect x="323" y="114" width="5" height="18" rx="1" fill="white"/>
+          <!-- black keys -->
+          <rect x="291" y="114" width="4" height="11" rx="1" fill="#1a1a1a"/>
+          <rect x="298" y="114" width="4" height="11" rx="1" fill="#1a1a1a"/>
+          <rect x="312" y="114" width="4" height="11" rx="1" fill="#1a1a1a"/>
+          <rect x="319" y="114" width="4" height="11" rx="1" fill="#1a1a1a"/>
+          <!-- pianist hands -->
+          <ellipse cx="300" cy="114" rx="8" ry="4" fill="#FDDCB5" style="animation:handsPlay 0.4s ease-in-out infinite alternate"/>
+          <style>@keyframes handsPlay{from{transform:translateY(0);}to{transform:translateY(-4px);}}</style>
+        </g>
+
+        <!-- Floating music notes -->
+        <text x="100" y="60" font-size="22" fill="#F8D347" style="animation:noteFloat1 1.5s ease-in-out infinite alternate">♪</text>
+        <text x="200" y="40" font-size="18" fill="#FC5185" style="animation:noteFloat2 1.2s ease-in-out infinite alternate">♫</text>
+        <text x="130" y="30" font-size="24" fill="#A78BFA" style="animation:noteFloat3 1.8s ease-in-out infinite alternate">♩</text>
+        <text x="270" y="55" font-size="20" fill="#0ABFBC" style="animation:noteFloat1 1.6s ease-in-out infinite alternate">♬</text>
+        <text x="50" y="45" font-size="16" fill="#6EE7B7" style="animation:noteFloat2 1.3s ease-in-out infinite alternate">♪</text>
+        <style>
+          @keyframes noteFloat1{from{transform:translateY(0) rotate(-5deg);}to{transform:translateY(-15px) rotate(5deg);}}
+          @keyframes noteFloat2{from{transform:translateY(-8px) rotate(3deg);}to{transform:translateY(8px) rotate(-3deg);}}
+          @keyframes noteFloat3{from{transform:translateY(0) scale(1);}to{transform:translateY(-20px) scale(1.2);}}
+        </style>
+
+        <!-- spotlight rays -->
+        <path d="M170 0 L120 165" stroke="rgba(248,211,71,0.08)" stroke-width="40"/>
+        <path d="M170 0 L170 165" stroke="rgba(248,211,71,0.06)" stroke-width="30"/>
+        <path d="M170 0 L220 165" stroke="rgba(248,211,71,0.08)" stroke-width="40"/>
+      </svg>
+    </div>
+
+    <button class="retry-btn" style="background:linear-gradient(135deg,var(--teal),var(--lav));color:white;" onclick="closeFinale()">🎻 Keep Playing!</button>
+  </div>
+
+  <!-- COMEBACK -->
+  <div class="finale-comeback" id="finaleComeback">
+    <!-- Large Mozart dejected → cheeky -->
+    <div class="finale-avatar">
+      <svg width="150" height="210" viewBox="0 0 108 155" xmlns="http://www.w3.org/2000/svg" style="animation:comebackWiggle 0.6s ease-in-out 3">
+        <ellipse cx="54" cy="148" rx="38" ry="10" fill="#2d2b6b"/>
+        <rect x="16" y="130" width="76" height="12" rx="4" fill="#3d3b8b" stroke="#A78BFA" stroke-width="1.5"/>
+        <ellipse cx="54" cy="112" rx="26" ry="20" fill="#7C3AED"/>
+        <path d="M28 105 Q54 118 80 105 L80 128 Q54 135 28 128 Z" fill="#6D28D9"/>
+        <ellipse cx="54" cy="100" rx="8" ry="5" fill="white"/>
+        <path d="M50 100 L54 110 L58 100" fill="white"/>
+        <path d="M28 108 Q18 100 24 92" stroke="#7C3AED" stroke-width="10" fill="none" stroke-linecap="round"/>
+        <path d="M80 108 Q88 100 84 92" stroke="#7C3AED" stroke-width="10" fill="none" stroke-linecap="round"/>
+        <ellipse cx="54" cy="72" rx="26" ry="24" fill="#FDDCB5"/>
+        <ellipse cx="54" cy="56" rx="28" ry="18" fill="#f0ece4"/>
+        <ellipse cx="28" cy="70" rx="8" ry="16" fill="#f0ece4"/>
+        <ellipse cx="80" cy="70" rx="8" ry="16" fill="#f0ece4"/>
+        <rect x="44" y="86" width="20" height="5" rx="2" fill="#FC5185"/>
+        <!-- sad eyes (squiggly instead of shades) -->
+        <path d="M36 70 Q41 67 46 70" stroke="#666" stroke-width="2" fill="none"/>
+        <path d="M62 70 Q67 67 72 70" stroke="#666" stroke-width="2" fill="none"/>
+        <!-- wobbly mouth (sad but about to smirk) -->
+        <path d="M44 84 Q54 80 64 84" stroke="#c97040" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <!-- tears -->
+        <ellipse cx="36" cy="76" rx="3" ry="4" fill="#60A5FA" opacity="0.6"/>
+        <ellipse cx="72" cy="76" rx="3" ry="4" fill="#60A5FA" opacity="0.6"/>
+        <ellipse cx="38" cy="80" rx="6" ry="4" fill="#FFB3C6" opacity="0.4"/>
+        <ellipse cx="70" cy="80" rx="6" ry="4" fill="#FFB3C6" opacity="0.4"/>
+        <ellipse cx="54" cy="78" rx="4" ry="3" fill="#f0c090"/>
+      </svg>
+    </div>
+    <style>@keyframes comebackWiggle{0%,100%{transform:rotate(0);}25%{transform:rotate(-10deg);}75%{transform:rotate(10deg);}}</style>
+
+    <div class="comeback-title" id="comebackTitle">🎼 So close, Alice!</div>
+    <div class="comeback-msg" id="comebackMsg"></div>
+    <button class="retry-btn" onclick="retrySheet()">🎵 Try Again!</button>
+    <div style="font-family:'Baloo 2',cursive;font-size:0.85rem;color:rgba(255,255,255,0.5);margin-top:6px;">Hit 85% to unlock the full orchestra! 🎻</div>
+  </div>
+
+</div><!-- /finale overlay -->
+
+
+<!-- ════════════════════════════════
+     PAGE
+════════════════════════════════ -->
+<div class="header" id="mainHeader">
+  <div class="badge-slot">
+    <div class="badge-stamp" id="badgeStamp"></div>
+  </div>
+  <div class="header-inner">
+    <div class="header-text">
+      <h1>Alice's <span>Geometry</span> Challenge 🔷</h1>
+      <div class="sub">Grade 6 · Combined Area Problems · <span id="headerDate"></span></div>
+    </div>
+    <div class="date-pill" id="datePill"></div>
+  </div>
+</div>
+
+<div class="page">
+
+  <div class="formula-bar">
+    <div class="fi"><span class="fn">Triangle</span>½ × base × height</div>
+    <div class="fi"><span class="fn">Rectangle</span>length × width</div>
+    <div class="fi"><span class="fn">Trapezoid</span>½ × (a+b) × height</div>
+    <div class="fi"><span class="fn">Parallelogram</span>base × height</div>
+  </div>
+
+  <!-- ═══ Q1: Rectangle + Triangle on top (house) ═══
+       Rect 8×5=40, Tri ½×8×3=12, Total=52 -->
+  <div class="qcard">
+    <div class="qhead">
+      <div class="qnum">1</div>
+      <div class="qtitle">A birthday card is shaped like a rectangle with a triangular flap on top. Find the total area.</div>
+    </div>
+    <div class="qbody">
+      <div class="diag">
+        <svg width="190" height="195" viewBox="0 0 190 195" xmlns="http://www.w3.org/2000/svg">
+          <defs><marker id="ar1" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3z" fill="#6b7280"/></marker></defs>
+          <rect x="25" y="95" width="140" height="80" fill="#C7F2FA" stroke="#0ABFBC" stroke-width="2.5"/>
+          <polygon points="25,95 95,30 165,95" fill="#A7F0E0" stroke="#0ABFBC" stroke-width="2.5"/>
+          <text x="95" y="142" text-anchor="middle" font-family="Quicksand" font-weight="700" font-size="11" fill="#0ABFBC">Rectangle</text>
+          <text x="95" y="68" text-anchor="middle" font-family="Quicksand" font-weight="700" font-size="11" fill="#059669">Triangle</text>
+          <line x1="25" y1="185" x2="165" y2="185" stroke="#6b7280" stroke-width="1.5" marker-start="url(#ar1)" marker-end="url(#ar1)"/>
+          <text x="95" y="194" text-anchor="middle" class="dim-text">8 cm</text>
+          <line x1="176" y1="95" x2="176" y2="175" stroke="#6b7280" stroke-width="1.5" marker-start="url(#ar1)" marker-end="url(#ar1)"/>
+          <text x="185" y="138" text-anchor="middle" class="dim-text" transform="rotate(90,185,138)">5 cm</text>
+          <line x1="95" y1="30" x2="95" y2="95" stroke="#FC5185" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <text x="103" y="66" class="dim-text" fill="#FC5185">3 cm</text>
+        </svg>
+      </div>
+      <div class="info">
+        <div class="info-lbl">Measurements</div>
+        <ul class="dims">
+          <li><span class="dot" style="background:var(--teal)"></span>Rectangle: <strong>8 cm × 5 cm</strong></li>
+          <li><span class="dot" style="background:var(--teal)"></span>Triangle base: <strong>8 cm</strong></li>
+          <li><span class="dot" style="background:var(--coral)"></span>Triangle height: <strong>3 cm</strong></li>
+        </ul>
+        <div class="hint-box">💡 Calculate each part separately, then add!</div>
+      </div>
+    </div>
+    <div class="ans-row">
+      <span class="ans-lbl">Total Area =</span>
+      <input class="ans-input" type="number" id="q1" placeholder="?"/>
+      <span class="unit">cm²</span>
+      <button class="check-mini" onclick="checkQ(1,52,'q1')">Check ✓</button>
+    </div>
+    <div class="qfeedback" id="fb1"></div>
+  </div>
+
+  <!-- ═══ Q2: Large rect minus two rectangular notches ═══
+       Big rect 14×9=126, two notches each 3×2=6, total cut=12, ans=114 -->
+  <div class="qcard">
+    <div class="qhead">
+      <div class="qnum">2</div>
+      <div class="qtitle">A wooden shelf has two identical rectangular notches cut from its top corners. Find the remaining area.</div>
+    </div>
+    <div class="qbody">
+      <div class="diag">
+        <svg width="210" height="175" viewBox="0 0 210 175" xmlns="http://www.w3.org/2000/svg">
+          <defs><marker id="ar2" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3z" fill="#6b7280"/></marker></defs>
+          <!-- main shape with notches -->
+          <polygon points="15,30 55,30 55,55 155,55 155,30 195,30 195,155 15,155" fill="#FFE4E6" stroke="#FC5185" stroke-width="2.5"/>
+          <!-- cutout boxes -->
+          <rect x="15" y="30" width="40" height="25" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <rect x="155" y="30" width="40" height="25" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <text x="35" y="45" text-anchor="middle" font-family="Quicksand" font-weight="700" font-size="9" fill="#9ca3af">cut</text>
+          <text x="175" y="45" text-anchor="middle" font-family="Quicksand" font-weight="700" font-size="9" fill="#9ca3af">cut</text>
+          <!-- width -->
+          <line x1="15" y1="165" x2="195" y2="165" stroke="#6b7280" stroke-width="1.5" marker-start="url(#ar2)" marker-end="url(#ar2)"/>
+          <text x="105" y="174" text-anchor="middle" class="dim-text">14 cm</text>
+          <!-- height -->
+          <line x1="4" y1="30" x2="4" y2="155" stroke="#6b7280" stroke-width="1.5" marker-start="url(#ar2)" marker-end="url(#ar2)"/>
+          <text x="10" y="97" text-anchor="middle" class="dim-text" transform="rotate(-90,10,97)">9 cm</text>
+          <!-- notch width -->
+          <line x1="15" y1="22" x2="55" y2="22" stroke="#FC5185" stroke-width="1.5" marker-start="url(#ar2)" marker-end="url(#ar2)"/>
+          <text x="35" y="19" text-anchor="middle" class="dim-text" fill="#FC5185">3 cm</text>
+          <!-- notch height -->
+          <line x1="200" y1="30" x2="200" y2="55" stroke="#FC5185" stroke-width="1.5" marker-start="url(#ar2)" marker-end="url(#ar2)"/>
+          <text x="207" y="46" text-anchor="middle" class="dim-text" fill="#FC5185" transform="rotate(90,207,46)">2 cm</text>
+        </svg>
+      </div>
+      <div class="info">
+        <div class="info-lbl">Measurements</div>
+        <ul class="dims">
+          <li><span class="dot" style="background:var(--coral)"></span>Full rectangle: <strong>14 cm × 9 cm</strong></li>
+          <li><span class="dot" style="background:var(--coral)"></span>Each notch: <strong>3 cm × 2 cm</strong></li>
+          <li><span class="dot" style="background:var(--coral)"></span>There are <strong>2 notches</strong></li>
+        </ul>
+        <div class="hint-box">💡 Full area minus both notches!</div>
+      </div>
+    </div>
+    <div class="ans-row">
+      <span class="ans-lbl">Remaining Area =</span>
+      <input class="ans-input" type="number" id="q2" placeholder="?"/>
+      <span class="unit">cm²</span>
+      <button class="check-mini" onclick="checkQ(2,114,'q2')">Check ✓</button>
+    </div>
+    <div class="qfeedback" id="fb2"></div>
+  </div>
+
+  <!-- ═══ Q3: Trapezoid + rectangle below ═══
+       Trap ½×(10+6)×4=32, Rect 10×7=70, Total=102 -->
+  <div class="qcard">
+    <div class="qhead">
+      <div class="qnum">3</div>
+      <div class="qtitle">A picture frame backing has a trapezoid top section and a rectangular bottom. What is the total area?</div>
+    </div>
+    <div class="qbody">
+      <div class="diag">
+        <svg width="200" height="205" viewBox="0 0 200 205" xmlns="http://www.w3.org/2000/svg">
+          <defs><marker id="ar3" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3z" fill="#6b7280"/></marker></defs>
+          <!-- rectangle bottom -->
+          <rect x="20" y="105" width="155" height="80" fill="#EDE9FE" stroke="#A78BFA" stroke-width="2.5"/>
+          <!-- trapezoid top -->
+          <polygon points="20,105 175,105 155,35 40,35" fill="#DDD6FE" stroke="#A78BFA" stroke-width="2.5"/>
+          <text x="97" y="150" text-anchor="middle" font-family="Quicksand" font-weight="700" font-size="11" fill="#7C3AED">Rectangle</text>
+          <text x="97" y="76" text-anchor="middle" font-family="Quicksand" font-weight="700" font-size="11" fill="#7C3AED">Trapezoid</text>
+          <!-- rect bottom width 10cm -->
+          <line x1="20" y1="194" x2="175" y2="194" stroke="#6b7280" stroke-width="1.5" marker-start="url(#ar3)" marker-end="url(#ar3)"/>
+          <text x="97" y="204" text-anchor="middle" class="dim-text">10 cm</text>
+          <!-- rect height 7cm -->
+          <line x1="185" y1="105" x2="185" y2="185" stroke="#6b7280" stroke-width="1.5" marker-start="url(#ar3)" marker-end="url(#ar3)"/>
+          <text x="194" y="148" text-anchor="middle" class="dim-text" transform="rotate(90,194,148)">7 cm</text>
+          <!-- trap top 6cm -->
+          <line x1="40" y1="24" x2="155" y2="24" stroke="#A78BFA" stroke-width="1.5" marker-start="url(#ar3)" marker-end="url(#ar3)"/>
+          <text x="97" y="20" text-anchor="middle" class="dim-text" fill="#A78BFA">6 cm</text>
+          <!-- trap height 4cm -->
+          <line x1="8" y1="35" x2="8" y2="105" stroke="#A78BFA" stroke-width="1.5" marker-start="url(#ar3)" marker-end="url(#ar3)"/>
+          <text x="14" y="74" text-anchor="middle" class="dim-text" fill="#A78BFA" transform="rotate(-90,14,74)">4 cm</text>
+        </svg>
+      </div>
+      <div class="info">
+        <div class="info-lbl">Measurements</div>
+        <ul class="dims">
+          <li><span class="dot" style="background:var(--lav)"></span>Rectangle: <strong>10 cm × 7 cm</strong></li>
+          <li><span class="dot" style="background:var(--lav)"></span>Trapezoid bottom base: <strong>10 cm</strong></li>
+          <li><span class="dot" style="background:var(--lav)"></span>Trapezoid top base: <strong>6 cm</strong></li>
+          <li><span class="dot" style="background:var(--lav)"></span>Trapezoid height: <strong>4 cm</strong></li>
+        </ul>
+        <div class="hint-box">💡 Don't forget the trapezoid formula: ½ × (a+b) × h</div>
+      </div>
+    </div>
+    <div class="ans-row">
+      <span class="ans-lbl">Total Area =</span>
+      <input class="ans-input" type="number" id="q3" placeholder="?"/>
+      <span class="unit">cm²</span>
+      <button class="check-mini" onclick="checkQ(3,102,'q3')">Check ✓</button>
+    </div>
+    <div class="qfeedback" id="fb3"></div>
+  </div>
+
+  <!-- ═══ Q4: Big triangle minus parallelogram inside ═══
+       Big tri ½×16×12=96, parallelogram 5×4=20, ans=76 -->
+  <div class="qcard">
+    <div class="qhead">
+      <div class="qnum">4</div>
+      <div class="qtitle">A triangular garden has a parallelogram-shaped pond cut out from its centre. Find the area of the garden (not the pond).</div>
+    </div>
+    <div class="qbody">
+      <div class="diag">
+        <svg width="215" height="200" viewBox="0 0 215 200" xmlns="http://www.w3.org/2000/svg">
+          <defs><marker id="ar4" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3z" fill="#6b7280"/></marker></defs>
+          <!-- big triangle -->
+          <polygon points="107,15 15,180 200,180" fill="#FEF3C7" stroke="#FB923C" stroke-width="2.5"/>
+          <!-- parallelogram inside -->
+          <polygon points="80,130 120,130 130,155 90,155" fill="#e5e7eb" stroke="#9ca3af" stroke-width="2" stroke-dasharray="4,3"/>
+          <text x="105" y="146" text-anchor="middle" font-family="Quicksand" font-weight="700" font-size="9" fill="#9ca3af">pond</text>
+          <!-- big tri base 16cm -->
+          <line x1="15" y1="192" x2="200" y2="192" stroke="#6b7280" stroke-width="1.5" marker-start="url(#ar4)" marker-end="url(#ar4)"/>
+          <text x="107" y="200" text-anchor="middle" class="dim-text">16 cm</text>
+          <!-- big tri height 12cm -->
+          <line x1="107" y1="15" x2="107" y2="180" stroke="#FB923C" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <text x="116" y="96" class="dim-text" fill="#FB923C">12 cm</text>
+          <!-- parallelogram base 5cm -->
+          <line x1="80" y1="125" x2="120" y2="125" stroke="#9ca3af" stroke-width="1.5" marker-start="url(#ar4)" marker-end="url(#ar4)"/>
+          <text x="100" y="122" text-anchor="middle" class="dim-text" fill="#9ca3af">5 cm</text>
+          <!-- parallelogram height 4cm -->
+          <line x1="136" y1="130" x2="136" y2="155" stroke="#9ca3af" stroke-width="1.5" marker-start="url(#ar4)" marker-end="url(#ar4)"/>
+          <text x="147" y="146" class="dim-text" fill="#9ca3af" transform="rotate(90,147,146)">4 cm</text>
+        </svg>
+      </div>
+      <div class="info">
+        <div class="info-lbl">Measurements</div>
+        <ul class="dims">
+          <li><span class="dot" style="background:var(--orange)"></span>Big triangle base: <strong>16 cm</strong></li>
+          <li><span class="dot" style="background:var(--orange)"></span>Big triangle height: <strong>12 cm</strong></li>
+          <li><span class="dot" style="background:var(--orange)"></span>Parallelogram base: <strong>5 cm</strong></li>
+          <li><span class="dot" style="background:var(--orange)"></span>Parallelogram height: <strong>4 cm</strong></li>
+        </ul>
+        <div class="hint-box">💡 Big triangle area minus the parallelogram pond!</div>
+      </div>
+    </div>
+    <div class="ans-row">
+      <span class="ans-lbl">Garden Area =</span>
+      <input class="ans-input" type="number" id="q4" placeholder="?"/>
+      <span class="unit">cm²</span>
+      <button class="check-mini" onclick="checkQ(4,76,'q4')">Check ✓</button>
+    </div>
+    <div class="qfeedback" id="fb4"></div>
+  </div>
+
+  <!-- ═══ Q5: T-shape (two rectangles) ═══
+       Top rect 12×3=36, vertical rect 4×10=40, Total=76 -->
+  <div class="qcard">
+    <div class="qhead">
+      <div class="qnum">5</div>
+      <div class="qtitle">A T-shaped sign is made of two rectangles joined together. What is the total area of the sign?</div>
+    </div>
+    <div class="qbody">
+      <div class="diag">
+        <svg width="205" height="195" viewBox="0 0 205 195" xmlns="http://www.w3.org/2000/svg">
+          <defs><marker id="ar5" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3z" fill="#6b7280"/></marker></defs>
+          <!-- T shape: top bar + vertical bar -->
+          <rect x="15" y="25" width="170" height="45" fill="#DBEAFE" stroke="#60A5FA" stroke-width="2.5"/>
+          <rect x="83" y="70" width="44" height="100" fill="#BFDBFE" stroke="#60A5FA" stroke-width="2.5"/>
+          <text x="100" y="52" text-anchor="middle" font-family="Quicksand" font-weight="700" font-size="11" fill="#2563eb">Top Bar</text>
+          <text x="105" y="128" text-anchor="middle" font-family="Quicksand" font-weight="700" font-size="10" fill="#1d4ed8">Stem</text>
+          <!-- top bar width 12cm -->
+          <line x1="15" y1="14" x2="185" y2="14" stroke="#6b7280" stroke-width="1.5" marker-start="url(#ar5)" marker-end="url(#ar5)"/>
+          <text x="100" y="11" text-anchor="middle" class="dim-text">12 cm</text>
+          <!-- top bar height 3cm -->
+          <line x1="193" y1="25" x2="193" y2="70" stroke="#6b7280" stroke-width="1.5" marker-start="url(#ar5)" marker-end="url(#ar5)"/>
+          <text x="200" y="50" text-anchor="middle" class="dim-text" transform="rotate(90,200,50)">3 cm</text>
+          <!-- stem width 4cm -->
+          <line x1="83" y1="183" x2="127" y2="183" stroke="#60A5FA" stroke-width="1.5" marker-start="url(#ar5)" marker-end="url(#ar5)"/>
+          <text x="105" y="192" text-anchor="middle" class="dim-text" fill="#60A5FA">4 cm</text>
+          <!-- stem height 10cm -->
+          <line x1="136" y1="70" x2="136" y2="170" stroke="#60A5FA" stroke-width="1.5" marker-start="url(#ar5)" marker-end="url(#ar5)"/>
+          <text x="148" y="122" text-anchor="middle" class="dim-text" fill="#60A5FA" transform="rotate(90,148,122)">10 cm</text>
+        </svg>
+      </div>
+      <div class="info">
+        <div class="info-lbl">Measurements</div>
+        <ul class="dims">
+          <li><span class="dot" style="background:var(--blue)"></span>Top bar: <strong>12 cm × 3 cm</strong></li>
+          <li><span class="dot" style="background:var(--blue)"></span>Vertical stem: <strong>4 cm × 10 cm</strong></li>
+        </ul>
+        <div class="hint-box">💡 The stem sits below the bar — no overlap! Add both areas.</div>
+      </div>
+    </div>
+    <div class="ans-row">
+      <span class="ans-lbl">Total Area =</span>
+      <input class="ans-input" type="number" id="q5" placeholder="?"/>
+      <span class="unit">cm²</span>
+      <button class="check-mini" onclick="checkQ(5,76,'q5')">Check ✓</button>
+    </div>
+    <div class="qfeedback" id="fb5"></div>
+  </div>
+
+  <!-- ═══ Q6: Parallelogram + triangle on top ═══
+       Parallelogram 11×6=66, Triangle ½×8×5=20, Total=86 -->
+  <div class="qcard">
+    <div class="qhead">
+      <div class="qnum">6</div>
+      <div class="qtitle">An arrow shape is made of a parallelogram with a triangle pointing to the right. Find the total area.</div>
+    </div>
+    <div class="qbody">
+      <div class="diag">
+        <svg width="225" height="175" viewBox="0 0 225 175" xmlns="http://www.w3.org/2000/svg">
+          <defs><marker id="ar6" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3z" fill="#6b7280"/></marker></defs>
+          <!-- parallelogram -->
+          <polygon points="15,50 140,50 125,130 0,130" fill="#D1FAE5" stroke="#6EE7B7" stroke-width="2.5"/>
+          <!-- triangle on right -->
+          <polygon points="140,50 125,130 205,90" fill="#A7F3D0" stroke="#6EE7B7" stroke-width="2.5"/>
+          <text x="70" y="96" text-anchor="middle" font-family="Quicksand" font-weight="700" font-size="11" fill="#059669">Parallelogram</text>
+          <text x="162" y="96" text-anchor="middle" font-family="Quicksand" font-weight="700" font-size="10" fill="#047857">▶ Tri</text>
+          <!-- para base 11cm -->
+          <line x1="0" y1="143" x2="125" y2="143" stroke="#6b7280" stroke-width="1.5" marker-start="url(#ar6)" marker-end="url(#ar6)"/>
+          <text x="62" y="154" text-anchor="middle" class="dim-text">11 cm</text>
+          <!-- para height 6cm -->
+          <line x1="148" y1="50" x2="133" y2="130" stroke="#6EE7B7" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <line x1="8" y1="42" x2="8" y2="130" stroke="#6b7280" stroke-width="1.5" marker-start="url(#ar6)" marker-end="url(#ar6)"/>
+          <text x="14" y="90" text-anchor="middle" class="dim-text" transform="rotate(-90,14,90)">6 cm</text>
+          <!-- tri base 8cm (right side of para) -->
+          <text x="216" y="84" class="dim-text" fill="#059669">8 cm</text>
+          <!-- tri height 5cm -->
+          <line x1="140" y1="40" x2="125" y2="40" stroke="#6EE7B7" stroke-width="1.5" marker-start="url(#ar6)" marker-end="url(#ar6)"/>
+          <text x="132" y="36" text-anchor="middle" class="dim-text" fill="#6EE7B7">same 6cm</text>
+          <text x="216" y="96" class="dim-text" fill="#9ca3af">(base)</text>
+          <text x="144" y="20" class="dim-text" fill="#059669">h=5cm</text>
+        </svg>
+      </div>
+      <div class="info">
+        <div class="info-lbl">Measurements</div>
+        <ul class="dims">
+          <li><span class="dot" style="background:var(--mint)"></span>Parallelogram base: <strong>11 cm</strong></li>
+          <li><span class="dot" style="background:var(--mint)"></span>Parallelogram height: <strong>6 cm</strong></li>
+          <li><span class="dot" style="background:var(--mint)"></span>Triangle base: <strong>8 cm</strong></li>
+          <li><span class="dot" style="background:var(--mint)"></span>Triangle height: <strong>5 cm</strong></li>
+        </ul>
+        <div class="hint-box">💡 Calculate each shape, then add. The triangle points right — like an arrow!</div>
+      </div>
+    </div>
+    <div class="ans-row">
+      <span class="ans-lbl">Total Area =</span>
+      <input class="ans-input" type="number" id="q6" placeholder="?"/>
+      <span class="unit">cm²</span>
+      <button class="check-mini" onclick="checkQ(6,86,'q6')">Check ✓</button>
+    </div>
+    <div class="qfeedback" id="fb6"></div>
+  </div>
+
+  <div class="final-btn-wrap">
+    <button class="final-btn" onclick="finalCheck()">🎼 Submit & See My Score!</button>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+// ── DATE ──
+const now = new Date();
+const dateStr = now.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('headerDate').textContent = dateStr;
+document.getElementById('datePill').textContent = '📅 ' + dateStr;
+
+// ── ANSWERS & TRACKING ──
+const answers = {1:52, 2:114, 3:102, 4:76, 5:76, 6:86};
+const userAnswers = {};
+let totalChecked = 0;
+
+// ── MOZART SPEECH LINES ──
+const correctLines = [
+  "🎵 YESSS! Even my shades are dancing!",
+  "⚡ BOOM! Mozart approves from behind the drum kit!",
+  "🥁 *drops drumstick in amazement* Flawless!",
+  "😎 Too easy for you! Beethoven is jealous.",
+  "🎸 That's more electric than my drum solo!",
+  "🏆 Geometry? More like GEO-MA-STRY! Ha!",
+  "⚡ Correct! I almost fell off my drum stool!",
+  "🎵 Bach texted me — he says well done too!",
+  "😎 Your brain is louder than my cymbals!",
+  "🥁 *plays victory drum roll* PERFECT!"
+];
+const wrongLines = [
+  "🥁 Hmm... even my drums sound confused.",
+  "😎 The shades are covering my disappointment...",
+  "🎵 Not quite! Try again — I'll wait (drumming).",
+  "⚡ My drumstick slipped reading that answer.",
+  "😅 Beethoven would say: try once more!",
+  "🥁 *misses the cymbal* We both missed!",
+  "🎵 Close! The answer is hiding — find it!",
+  "😎 Even cool shades can't hide this...",
+  "⚡ Check your steps — you've got this!",
+  "🥁 One more try! The orchestra believes in you!"
+];
+const idleLines = [
+  "🎵 Let's show geometry who's boss!",
+  "😎 Mozart + maths = unstoppable!",
+  "⚡ I'm warming up the drums for your win!",
+  "🥁 Think carefully... I'm watching!",
+  "🎵 You can do this, Alice!",
+];
+
+let lastCorrectIdx = -1, lastWrongIdx = -1, lastIdleIdx = -1;
+let idleTimer;
+
+function getRandom(arr, lastIdx) {
+  let idx;
+  do { idx = Math.floor(Math.random() * arr.length); } while(idx === lastIdx && arr.length > 1);
+  return {text: arr[idx], idx};
+}
+
+function setBubble(text) {
+  const b = document.getElementById('speechBubble');
+  b.style.opacity = '0';
+  setTimeout(() => { b.textContent = text; b.style.opacity = '1'; }, 200);
+}
+
+function startIdleRotation() {
+  clearInterval(idleTimer);
+  idleTimer = setInterval(() => {
+    const r = getRandom(idleLines, lastIdleIdx);
+    lastIdleIdx = r.idx;
+    setBubble(r.text);
+  }, 4000);
+}
+startIdleRotation();
+
+// ── REACTION ──
+const correctAnims = ['react-correct1','react-correct2','react-correct3'];
+const wrongAnims   = ['react-wrong1','react-wrong2','react-wrong3'];
+let lastCorrectAnim = -1, lastWrongAnim = -1;
+
+function triggerReaction(isCorrect) {
+  clearInterval(idleTimer);
+  const svg = document.getElementById('avatarSvg');
+  // remove all reaction classes
+  [...correctAnims,...wrongAnims].forEach(c => svg.classList.remove(c));
+
+  let animArr = isCorrect ? correctAnims : wrongAnims;
+  let lastAnim = isCorrect ? lastCorrectAnim : lastWrongAnim;
+  let animIdx;
+  do { animIdx = Math.floor(Math.random() * animArr.length); } while(animIdx === lastAnim && animArr.length > 1);
+  if(isCorrect) lastCorrectAnim = animIdx; else lastWrongAnim = animIdx;
+
+  svg.classList.add(animArr[animIdx]);
+
+  // speech
+  if(isCorrect) {
+    const r = getRandom(correctLines, lastCorrectIdx);
+    lastCorrectIdx = r.idx;
+    setBubble(r.text);
+  } else {
+    const r = getRandom(wrongLines, lastWrongIdx);
+    lastWrongIdx = r.idx;
+    setBubble(r.text);
+  }
+
+  // restore after 2s
+  setTimeout(() => {
+    [...correctAnims,...wrongAnims].forEach(c => svg.classList.remove(c));
+    startIdleRotation();
+  }, 2100);
+}
+
+// ── CHECK QUESTION ──
+function checkQ(num, correct, inputId) {
+  const input = document.getElementById(inputId);
+  const fb = document.getElementById('fb' + num);
+  const val = parseFloat(input.value);
+  input.classList.remove('correct','wrong');
+  fb.classList.remove('ok','err');
+
+  if(isNaN(val)) { fb.textContent = 'Enter a number first!'; fb.className = 'qfeedback err'; return; }
+
+  userAnswers[num] = val;
+  if(Math.abs(val - correct) < 0.01) {
+    input.classList.add('correct');
+    fb.textContent = '✅ Correct!';
+    fb.className = 'qfeedback ok';
+    triggerReaction(true);
+  } else {
+    input.classList.add('wrong');
+    fb.textContent = 'Not quite — check your steps!';
+    fb.className = 'qfeedback err';
+    triggerReaction(false);
+  }
+}
+
+// ── FINAL CHECK ──
+function finalCheck() {
+  // count correct
+  let correct = 0;
+  const total = Object.keys(answers).length;
+  for(let i = 1; i <= total; i++) {
+    const input = document.getElementById('q' + i);
+    const val = parseFloat(input.value);
+    if(!isNaN(val) && Math.abs(val - answers[i]) < 0.01) correct++;
+  }
+  const pct = (correct / total) * 100;
+
+  // stamp badge
+  stampBadge(pct);
+
+  // show finale after badge animation
+  setTimeout(() => showFinale(correct, total, pct), 800);
+}
+
+// ── BADGE ──
+function stampBadge(pct) {
+  const badge = document.getElementById('badgeStamp');
+  badge.className = 'badge-stamp';
+  let icon, label, cls;
+  if(pct === 100)      { icon='🏆'; label='PLATINUM'; cls='badge-plat'; }
+  else if(pct >= 85)   { icon='🥇'; label='GOLD';     cls='badge-gold'; }
+  else if(pct >= 70)   { icon='🥈'; label='SILVER';   cls='badge-silv'; }
+  else                 { icon='🥉'; label='BRONZE';   cls='badge-brnz'; }
+
+  badge.innerHTML = `<span class="badge-icon">${icon}</span>${label}`;
+  badge.classList.add(cls);
+  // force reflow then show
+  requestAnimationFrame(() => { badge.classList.add('show'); });
+}
+
+// ── FINALE ──
+const comebackMsgs = [
+  "Even Beethoven failed his first concert... probably. The orchestra is READY for you — just a few more tries! 🎻",
+  "So close!! The confetti is literally in my pocket, waiting. Hit 85% and I'll release it! 🎉",
+  "Mozart rating: needs more practice. Mozart belief: 100%. You've got this! 🥁",
+  "The full orchestra tuned up and everything... They'll wait! Try again! 🎼",
+  "Bach would say: 'Per aspera ad astra' — through hardship to the stars! Retry! ⭐",
+];
+
+function showFinale(correct, total, pct) {
+  clearInterval(idleTimer);
+  const overlay = document.getElementById('finaleOverlay');
+  overlay.classList.add('show');
+
+  if(pct >= 85) {
+    document.getElementById('finaleSuccess').classList.add('show');
+    document.getElementById('scoreReveal').textContent = `🎯 ${correct} out of ${total} correct — ${Math.round(pct)}%!`;
+    spawnConfetti();
+    playTriumphTune();
+  } else {
+    document.getElementById('finaleComeback').classList.add('show');
+    const msg = comebackMsgs[Math.floor(Math.random() * comebackMsgs.length)];
+    document.getElementById('comebackMsg').textContent = msg;
+    // dejected mozart animation already on the comeback SVG
+  }
+}
+
+function closeFinale() {
+  document.getElementById('finaleOverlay').classList.remove('show');
+  startIdleRotation();
+}
+
+function retrySheet() {
+  // reset all inputs
+  for(let i = 1; i <= 6; i++) {
+    const input = document.getElementById('q' + i);
+    input.value = '';
+    input.classList.remove('correct','wrong');
+    document.getElementById('fb' + i).textContent = '';
+    document.getElementById('fb' + i).className = 'qfeedback';
+  }
+  document.getElementById('finaleComeback').classList.remove('show');
+  document.getElementById('finaleSuccess').classList.remove('show');
+  document.getElementById('finaleOverlay').classList.remove('show');
+  // reset badge
+  const badge = document.getElementById('badgeStamp');
+  badge.classList.remove('show');
+  setTimeout(() => { badge.className = 'badge-stamp'; badge.innerHTML=''; }, 500);
+  startIdleRotation();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── CONFETTI ──
+function spawnConfetti() {
+  const overlay = document.getElementById('finaleOverlay');
+  const colors = ['#F8D347','#FC5185','#A78BFA','#0ABFBC','#6EE7B7','#FB923C'];
+  for(let i = 0; i < 60; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + 'vw';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.width = (8 + Math.random() * 8) + 'px';
+    piece.style.height = (8 + Math.random() * 8) + 'px';
+    piece.style.animationDuration = (2 + Math.random() * 3) + 's';
+    piece.style.animationDelay = (Math.random() * 2) + 's';
+    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    overlay.appendChild(piece);
+  }
+}
+
+// ── WEB AUDIO TRIUMPH TUNE ──
+function playTriumphTune() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    // triumphant fanfare melody
+    const notes = [
+      {f:523,t:0,d:0.15},{f:523,t:0.15,d:0.15},{f:523,t:0.3,d:0.15},
+      {f:659,t:0.45,d:0.4},
+      {f:587,t:0.9,d:0.15},{f:523,t:1.05,d:0.15},{f:659,t:1.2,d:0.6},
+      {f:784,t:1.85,d:0.15},{f:740,t:2.0,d:0.15},{f:698,t:2.15,d:0.15},
+      {f:659,t:2.35,d:0.5},
+      {f:415,t:2.9,d:0.15},{f:554,t:3.05,d:0.15},{f:523,t:3.2,d:0.15},
+      {f:494,t:3.4,d:0.15},{f:523,t:3.6,d:0.8},
+    ];
+    notes.forEach(n => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = 'triangle';
+      osc.frequency.value = n.f;
+      gain.gain.setValueAtTime(0.25, ctx.currentTime + n.t);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + n.t + n.d);
+      osc.start(ctx.currentTime + n.t);
+      osc.stop(ctx.currentTime + n.t + n.d + 0.05);
+    });
+  } catch(e) { console.log('Audio not available'); }
+}
+</script>
+</body>
+</html>
